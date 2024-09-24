@@ -3,7 +3,7 @@
 The City Discovery Game app lets users explore cities by scanning QR codes hidden near landmarks. Each scanned code unlocks a set of questions—one mandatory and optional ones for bonus points—offering an engaging way to learn about local history, culture, and geography. The app tracks user progress, provides the next QR code location, and enables team-based play where one person answers questions on behalf of the entire team.
 
 <p align="center">
-  <img src="image-1.png" alt="alt text">
+  <img src="screen.png" alt="alt text">
 </p>
 
 
