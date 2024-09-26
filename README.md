@@ -33,3 +33,7 @@ The City Discovery Game app lets users explore cities by scanning QR codes hidde
 ### 6. **Customization & Scalability**
 - The app can easily adapt to different cities by uploading new sets of QR codes and corresponding questions.
 - Content creators or local partners can create new games for specific cities, events, or locations.
+
+### 7. User roless
+- **admin**: to open games, close games, make games, edit teams
+- **player**: play game:) 
