@@ -16,7 +16,7 @@ The City Discovery Game app lets users explore cities by scanning QR codes hidde
 ### 2. **Question System**
 - **Obligatory Question**: Each location features one mandatory question that must be answered to progress.
 - **Optional Questions**: Users can answer additional questions for bonus points, creating an optional competitive element. The answer can be number, string also multiple choice questions are allowed. Optionally picture answers with manual validation can be incorporated.
-- **Catch the golden pig**: optionally there will be a open question for a password that can be obtained by catching a person "golden pig" in the city. 
+- **Catch the golden pig**: optionally there will be an open question for a password that can be obtained by catching a person "golden pig" in the city. 
 
 ### 3. **Team Play**
 - **Single Response for Teams**: One team member answers questions on behalf of the entire team, and all members receive the same points.
