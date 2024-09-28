@@ -11,7 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+
 import com.qrseekers.ui.theme.QRSeekersTheme
+import com.qrseekers.ui.LoginScreen
+import com.qrseekers.ui.RegisterScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,12 +22,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             QRSeekersTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Anna ✨",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                //LoginScreen(onLogin = {_,_->})
+                RegisterScreen(onRegister = {_,_->})
+
             }
         }
     }
@@ -42,6 +42,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     QRSeekersTheme {
-        Greeting("Android")
+        //LoginScreen(onLogin = {_,_->})
+
+        RegisterScreen(onRegister = {_,_->})
     }
 }
