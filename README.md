@@ -35,5 +35,5 @@ The City Discovery Game app lets users explore cities by scanning QR codes hidde
 - Content creators or local partners can create new games for specific cities, events, or locations.
 
 ### 7. User roless
-- **admin**: to open games, close games, make games, edit teams
-- **player**: play game:) 
+- **Administrator**: Responsible for opening and closing games, creating new games, and editing teams.
+- **Player**: Participates in the games and answers the questions.
