@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             QRSeekersTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "Anna ✨",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
