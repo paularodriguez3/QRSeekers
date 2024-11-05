@@ -32,6 +32,13 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("home page")
+
+        Button(onClick = {
+            navController.navigate("joingame")
+        }){
+            Text(text = "join game")
+        }
+
         Button(onClick = {
             authViewModel.signout()
         }){

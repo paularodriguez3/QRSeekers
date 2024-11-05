@@ -23,10 +23,11 @@ fun BottomNavigationBar() {
 
     NavigationBar {
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Person, contentDescription = "Home") },
+            icon = { Icon(Icons.Filled.Person, contentDescription = "Profile") },
             label = { Text("Profile") },
             selected = false,
-            onClick = { /* Handle Home click */ }
+            onClick = { navController.navigate("profile")}
+
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Add, contentDescription = "Files") },
