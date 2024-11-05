@@ -1,5 +1,6 @@
 package com.qrseekers
 
+import BottomNavigationBar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,17 +12,28 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.qrseekers.ui.theme.QRSeekersTheme
 
+import com.qrseekers.ui.HomePage
+import com.qrseekers.ui.LoginPage
+
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
-        val authViewModel : AuthViewModel by viewModels()
+        val authViewModel: AuthViewModel by viewModels()
         setContent {
-            QRSeekersTheme  {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MyAppNavigation(modifier =  Modifier.padding(innerPadding),authViewModel = authViewModel)
+            QRSeekersTheme {
+                Scaffold(modifier = Modifier.fillMaxSize(),
+                    bottomBar = { BottomNavigationBar() } //todo: only show bat on appropriate screens
+
+                ) { innerPadding ->
+                    AppNavigation(
+                        modifier = Modifier.padding(innerPadding),
+                        authViewModel = authViewModel
+                    )
+
                 }
             }
         }

@@ -10,7 +10,7 @@ import com.qrseekers.ui.LoginPage
 import com.qrseekers.ui.SignUpPage
 
 @Composable
-fun MyAppNavigation (modifier: Modifier = Modifier, authViewModel: AuthViewModel){
+fun AppNavigation (modifier: Modifier = Modifier, authViewModel: AuthViewModel){
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination="login", builder = {
