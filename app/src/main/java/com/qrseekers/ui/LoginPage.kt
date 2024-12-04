@@ -20,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.qrseekers.AuthState
-import com.qrseekers.AuthViewModel
+import com.qrseekers.viewmodels.AuthState
+import com.qrseekers.viewmodels.AuthViewModel
 
 
 @Composable

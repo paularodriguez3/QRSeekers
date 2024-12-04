@@ -11,8 +11,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.qrseekers.AuthState
-import com.qrseekers.AuthViewModel
+import com.qrseekers.viewmodels.AuthState
+import com.qrseekers.viewmodels.AuthViewModel
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
@@ -37,6 +37,12 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
             navController.navigate("joingame")
         }){
             Text(text = "join game")
+        }
+
+        Button(onClick = {
+            navController.navigate("quiz")
+        }){
+            Text(text = "start quiz")
         }
 
         Button(onClick = {

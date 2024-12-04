@@ -9,7 +9,12 @@ import com.qrseekers.ui.Game
 import com.qrseekers.ui.HomePage
 import com.qrseekers.ui.JoinGameScreen
 import com.qrseekers.ui.LoginPage
+import com.qrseekers.ui.ProfilePage
+import com.qrseekers.ui.QuizPage
+import com.qrseekers.ui.ScanPage
 import com.qrseekers.ui.SignUpPage
+import com.qrseekers.viewmodels.AuthViewModel
+import com.qrseekers.viewmodels.QuizViewModel
 
 @Composable
 fun AppNavigation (modifier: Modifier = Modifier, authViewModel: AuthViewModel){
@@ -25,6 +30,16 @@ fun AppNavigation (modifier: Modifier = Modifier, authViewModel: AuthViewModel){
         composable("home") {
             HomePage (modifier, navController, authViewModel)
         }
+        composable("scan"){
+            ScanPage(modifier, navController, authViewModel)
+        }
+        composable("profile") {
+            ProfilePage(modifier, navController)
+        }
+        composable("quiz"){
+            QuizPage("Prague castle", QuizViewModel(), onSubmit = {/* */})
+        }
+
         composable("joingame") {
             val games = listOf(
                 Game(name = "Game 1", description = "Discover the heart of the city", imageRes = android.R.drawable.ic_dialog_map),

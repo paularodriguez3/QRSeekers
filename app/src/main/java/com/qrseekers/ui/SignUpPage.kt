@@ -20,11 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.qrseekers.AuthViewModel
+import com.qrseekers.viewmodels.AuthViewModel
 
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
-import com.qrseekers.AuthState
+import com.qrseekers.viewmodels.AuthState
 
 
 @Composable

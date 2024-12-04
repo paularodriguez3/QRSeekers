@@ -11,8 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.qrseekers.ui.theme.QRSeekersTheme
-
-
+import com.qrseekers.viewmodels.AuthViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -24,7 +23,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             QRSeekersTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
-                    bottomBar = { BottomNavigationBar() } //todo: only show bat on appropriate screens
+                    bottomBar = { BottomNavigationBar() } //todo: only show bottom nav on appropriate screens
 
                 ) { innerPadding ->
                     AppNavigation(
