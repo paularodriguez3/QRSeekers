@@ -1,0 +1,45 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Ignore the .idea folder (IDE-specific settings)
+.idea/
+
+# Ignore gradle files that are generated or contain sensitive info
+.gradle/
+build/
+
+# Ignore gradle wrapper files
+gradle/wrapper/gradle-wrapper.jar
+
+# Ignore local Gradle properties
+local.properties
+
+# Ignore Android Studio/IntelliJ project files
+*.iml
+
+# Ignore logs and temp files
+*.log
+*.tmp
+
+# Ignore MacOS-specific files
+.DS_Store
+
+# Ignore any build output directories
+build/
+app/build/
+
+# Ignore Firebase/Google Services
+google-services.json
