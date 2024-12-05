@@ -1,5 +1,9 @@
 package com.qrseekers
 
+import BottomNavigationBar
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -17,45 +21,76 @@ import com.qrseekers.viewmodels.AuthViewModel
 import com.qrseekers.viewmodels.QuizViewModel
 
 @Composable
-fun AppNavigation (modifier: Modifier = Modifier, authViewModel: AuthViewModel){
+fun AppNavigation (
+    modifier: Modifier,
+    authViewModel: AuthViewModel){
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination="login", builder = {
-        composable("login") {
-            LoginPage (modifier, navController, authViewModel)
-        }
-        composable("signup") {
-            SignUpPage (modifier, navController, authViewModel)
-        }
-        composable("home") {
-            HomePage (modifier, navController, authViewModel)
-        }
-        composable("scan"){
-            ScanPage(modifier, navController, authViewModel)
-        }
-        composable("profile") {
-            ProfilePage(modifier, navController)
-        }
-        composable("quiz"){
-            QuizPage("Prague castle", QuizViewModel(), onSubmit = {/* */})
-        }
+    val bottomNavRoutes = listOf("home", "scan", "profile", "joingame")
 
-        composable("joingame") {
-            val games = listOf(
-                Game(name = "Game 1", description = "Discover the heart of the city", imageRes = android.R.drawable.ic_dialog_map),
-                Game(name = "Game 2", description = "Explore historic landmarks", imageRes = android.R.drawable.ic_dialog_map),
-                Game(name = "Game 3", description = "Solve the city mysteries", imageRes = android.R.drawable.ic_dialog_map)
-            )
+    val currentRoute = navController.currentBackStackEntry?.destination?.route
+    println("Current route: $currentRoute") // Debugging
 
-            JoinGameScreen(
-                games = games,
-                onGameSelected = { game -> /* Handle game selection */ },
-                onImportGame = { /* Handle importing game */ }
-            )
+
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            val currentRoute = navController.currentBackStackEntry?.destination?.route
+            val showBottomBar = currentRoute == null || currentRoute in bottomNavRoutes
+            if (showBottomBar) {
+                BottomNavigationBar(navController)
+            }
+        }
+    ) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = AppRoute.LOGIN.route,
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable(AppRoute.LOGIN.route) {
+                            LoginPage(modifier, navController, authViewModel)
+                        }
+                        composable(AppRoute.SIGNUP.route) {
+                            SignUpPage(modifier, navController, authViewModel)
+                        }
+                        composable(AppRoute.HOME.route) {
+                            HomePage(modifier, navController, authViewModel)
+                        }
+                        composable(AppRoute.SCAN.route) {
+                            ScanPage(modifier, navController, authViewModel)
+                        }
+                        composable(AppRoute.PROFILE.route) {
+                            ProfilePage(modifier, navController)
+                        }
+                        composable(AppRoute.JOINGAME.route) {
+                            JoinGameScreen(
+                                games = listOf(
+                                    Game(name = "Game 1", description = "Discover the heart of the city", imageRes = android.R.drawable.ic_dialog_map),
+                                    Game(name = "Game 2", description = "Explore historic landmarks", imageRes = android.R.drawable.ic_dialog_map),
+                                    Game(name = "Game 3", description = "Solve the city mysteries", imageRes = android.R.drawable.ic_dialog_map)
+                                ),
+                                onGameSelected = { game -> /* Handle game selection */ },
+                                onImportGame = { /* Handle importing game */ }
+                            )
+                        }
+                        composable(AppRoute.QUIZ.route) {
+                            QuizPage("Prague Castle", QuizViewModel(), onSubmit = { /* Handle quiz submission */ })
+                        }
         }
     }
 
-    )
 
+}
+
+// Enum for routes
+enum class AppRoute(val route: String, val showBottomNav: Boolean = false) {
+    LOGIN("login"),
+    SIGNUP("signup"),
+    HOME("home", true),
+    SCAN("scan", true),
+    PROFILE("profile", true),
+    JOINGAME("joingame", true),
+    QUIZ("quiz", true)
 }
 

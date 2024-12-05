@@ -22,16 +22,11 @@ class MainActivity : ComponentActivity() {
         val authViewModel: AuthViewModel by viewModels()
         setContent {
             QRSeekersTheme {
-                Scaffold(modifier = Modifier.fillMaxSize(),
-                    bottomBar = { BottomNavigationBar() } //todo: only show bottom nav on appropriate screens
-
-                ) { innerPadding ->
                     AppNavigation(
-                        modifier = Modifier.padding(innerPadding),
+                        modifier = Modifier.fillMaxSize(),
                         authViewModel = authViewModel
                     )
 
-                }
             }
         }
     }

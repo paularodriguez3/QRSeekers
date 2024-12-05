@@ -8,12 +8,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Person
+import androidx.navigation.NavController
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomNavigationBar() {
-    val navController = rememberNavController()
+fun BottomNavigationBar(
+    navController : NavController
+) {
+    //val navController = rememberNavController()
 
     NavigationBar {
         NavigationBarItem(
@@ -41,5 +44,5 @@ fun BottomNavigationBar() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewBottomNavigationBar() {
-    BottomNavigationBar()
+    //BottomNavigationBar()
 }
