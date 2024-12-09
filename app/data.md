@@ -23,6 +23,8 @@ This collection will store team data for team-based gameplay.
 | `teamName`       | String          | Name of the team.                                                                  |
 | `members`        | List<String>    | List of userIds of team members.                                                   |
 | `points`         | Integer         | Total points accumulated by the team.                                              |
+| `zoneNow`         | Integer         | Which zone the team is now                                              |
+| `startZone`         | Integer         | Which zone the team starts in                                              |
 
 ---
 
@@ -38,6 +40,8 @@ Each game represents a city-specific discovery journey.
 | `active`       | Boolean          | Current game status  |
 | `startTime`    | Timestamp       | Start time of the game.                                  |
 | `endTime`      | Timestamp       | End time of the game.                                    |
+| `contact`      | String          | Whatsapp contact on the main organizer                   |
+
 
 ---
 
@@ -47,7 +51,7 @@ Each zone code represents a location with associated questions.
 | **Field Name**      | **Data Type**   | **Description**                                                          |
 |---------------------|-----------------|--------------------------------------------------------------------------|
 | `locationName`      | String          | Name of the location (e.g., "Charles Bridge").                           |
-| `hint`              | String          | Hints where exactly in the location.                                     |
+| `hint`              | String?          | Hints where exactly in the location.                                     |
 | `coordinates`       | GeoPoint        | Geographical coordinates (latitude, longitude) for the QR code location. |
 | `mandatoryQuestion` | String      | The ID of the mandatory question associated with this QR code.           |
 | `optionalQuestions` | List<String> | List of IDs of optional questions associated with this QR code.          |
