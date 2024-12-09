@@ -23,6 +23,8 @@ This collection will store team data for team-based gameplay.
 | `teamName`       | String          | Name of the team.                                                                  |
 | `members`        | List<String>    | List of userIds of team members.                                                   |
 | `points`         | Integer         | Total points accumulated by the team.                                              |
+| `zoneNow`         | Integer         | Which zone the team is now                                              |
+| `startZone`         | Integer         | Which zone the team starts in                                              |
 
 ---
 
