@@ -38,6 +38,8 @@ Each game represents a city-specific discovery journey.
 | `active`       | Boolean          | Current game status  |
 | `startTime`    | Timestamp       | Start time of the game.                                  |
 | `endTime`      | Timestamp       | End time of the game.                                    |
+| `contact`      | String          | Whatsapp contact on the main organizer                   |
+
 
 ---
 
