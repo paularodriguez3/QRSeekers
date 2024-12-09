@@ -49,7 +49,7 @@ Each zone code represents a location with associated questions.
 | **Field Name**      | **Data Type**   | **Description**                                                          |
 |---------------------|-----------------|--------------------------------------------------------------------------|
 | `locationName`      | String          | Name of the location (e.g., "Charles Bridge").                           |
-| `hint`              | String          | Hints where exactly in the location.                                     |
+| `hint`              | String?          | Hints where exactly in the location.                                     |
 | `coordinates`       | GeoPoint        | Geographical coordinates (latitude, longitude) for the QR code location. |
 | `mandatoryQuestion` | String      | The ID of the mandatory question associated with this QR code.           |
 | `optionalQuestions` | List<String> | List of IDs of optional questions associated with this QR code.          |
