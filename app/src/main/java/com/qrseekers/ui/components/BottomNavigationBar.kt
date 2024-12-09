@@ -7,8 +7,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.navigation.NavController
+import com.qrseekers.AppRoute
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,20 +25,20 @@ fun BottomNavigationBar(
             icon = { Icon(Icons.Filled.Person, contentDescription = "Profile") },
             label = { Text("Profile") },
             selected = false,
-            onClick = { navController.navigate("profile")}
+            onClick = { navController.navigate(AppRoute.PROFILE.route)}
 
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Add, contentDescription = "Files") },
+            icon = { Icon(Icons.Filled.Add, contentDescription = "Scan") },
             label = { Text("Scan") },
             selected = false,
-            onClick = { navController.navigate("scan") }
+            onClick = { navController.navigate(AppRoute.SCAN.route) }
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Check, contentDescription = "Profile") },
-            label = { Text("Quests") },
+            icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
+            label = { Text("Home") },
             selected = false,
-            onClick = { /* Handle Profile click */ }
+            onClick = { navController.navigate(AppRoute.HOME.route) }
         )
     }
 }

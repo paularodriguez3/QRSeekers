@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.play.services.mlkit.barcode.scanning)
+    implementation(libs.androidx.room.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -87,4 +88,8 @@ dependencies {
     // QR Code scanning (ZXing)
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.zxing:core:3.4.1")
+
+    // images for quizes
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
 }

@@ -1,79 +1,69 @@
 package com.qrseekers.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
-
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.qrseekers.data.Question
-import com.qrseekers.viewmodels.QuizViewModel
+
 
 @Composable
 fun QuizPage(
     zoneName: String,
-    quizViewModel: QuizViewModel,  // Accept the QuizViewModel as a parameter
-    onSubmit: (List<Pair<String, String>>) -> Unit
+    onSubmit: (Map<String, String>) -> Unit
 ) {
-    // Observe the questions and team score from the ViewModel
-    val questions = quizViewModel.questions
-    val teamScore = quizViewModel.teamScore.value
-    var answers by remember { mutableStateOf(mutableMapOf<String, String>()) }
+    // Mock questions
+    val questions = listOf(
+        Question("1", "How many statues are there on Charles Bridge?", "multi",3, listOf("96", "45", "46", "78"), "96", null),
+        Question("2", "What year was Charles Bridge completed?", "multi",2, listOf("1342", "1402", "1357", "1410"), "1357", null),
+        Question("3", "Enter the total length of Charles Bridge (in meters):", "text",4, null, "516", "https://en.wikipedia.org/wiki/Charles_Bridge#/media/File:Charles_Bridge_-_Prague,_Czech_Republic_-_panoramio.jpg")
+    )
 
-    // Load questions when the QuizPage is displayed (gameId could come from the previous screen)
-    LaunchedEffect(Unit) {
-        quizViewModel.loadQuestions(gameId = "PDG_LS_2024")  // Replace with actual game ID
-    }
+    var answers by remember { mutableStateOf(mutableMapOf<String, String>()) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            //.background(Color.White)
     ) {
-        // Zone Title
+        // Zone title
         Text(
             text = "ZONE: $zoneName",
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.fillMaxWidth()
+                               .padding(bottom = 16.dp),
+            textAlign = TextAlign.Center
+
         )
 
-        // Questions list
+        // List of questions
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            questions.forEach { question ->
-                item {
-                    QuestionItem(
-                        question = question,
-                        answer = answers[question.id],
-                        onAnswerChange = { newAnswer ->
-                            answers[question.id] = newAnswer
-                        }
-                    )
-                }
+            items(questions.size) { index ->
+                val question = questions[index]
+                QuestionItem(
+                    question = question,
+                    answer = answers[question.id],
+                    onAnswerChange = { newAnswer ->
+                        answers = answers.toMutableMap().apply { this[question.id] = newAnswer }
+                    },
+                    index = index + 1
+                )
             }
         }
 
-        // Submit Button
+        // Submit button
         Button(
-            onClick = { onSubmit(answers.toList()) },
-            enabled = true,  // Always enabled now
+            onClick = { onSubmit(answers) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Submit")
@@ -81,12 +71,12 @@ fun QuizPage(
     }
 }
 
-
 @Composable
 fun QuestionItem(
     question: Question,
     answer: String?,
-    onAnswerChange: (String) -> Unit
+    onAnswerChange: (String) -> Unit,
+    index: Int
 ) {
     Column(
         modifier = Modifier
@@ -95,90 +85,83 @@ fun QuestionItem(
     ) {
         // Question text
         Text(
-            text = question.text,
+            text = "$index. (${question.points} pts) ${question.text}",
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        // Question options (if multiple choice)
-        question.options?.let { options ->
-            options.forEach { option ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onAnswerChange(option) }
-                        .padding(4.dp)
-                ) {
-                    RadioButton(
-                        selected = option == answer,
-                        onClick = { onAnswerChange(option) }
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = option)
-                }
-            }
-        } ?: run {
-            // Text input for open-ended questions
-            OutlinedTextField(
-                value = answer ?: "",
-                onValueChange = { onAnswerChange(it) },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Your answer") }
+        // Optional image
+        question.imageUrl?.let {
+            AsyncImage(
+                model = it,
+                contentDescription = "Question Image",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
             )
+        }
+
+        // Options or input field
+        question.options?.let { options ->
+            MultipleChoiceOptions(
+                options = options,
+                selectedOption = answer,
+                onOptionSelected = onAnswerChange
+            )
+        } ?: OpenEndedQuestion(
+            answer = answer,
+            onAnswerChange = onAnswerChange
+        )
+    }
+}
+
+@Composable
+fun MultipleChoiceOptions(
+    options: List<String>,
+    selectedOption: String?,
+    onOptionSelected: (String) -> Unit
+) {
+    Column {
+        options.forEach { option ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onOptionSelected(option) }
+                    .padding(4.dp)
+            ) {
+                RadioButton(
+                    selected = option == selectedOption,
+                    onClick = { onOptionSelected(option) }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = option)
+            }
         }
     }
 }
 
-/*
-// Mock data for preview
-class MockQuizViewModel : QuizViewModel() {
-    private val mockQuestions = mutableStateListOf(
-        Question(
-            id = "1",
-            text = "How many statues are there on Charles Bridge?",
-            type = "multiple_choice", // Example of type
-            options = listOf("96", "45", "46", "78", "95"),
-            points = 5,
-            correctAnswer = "96" // Correct answer
-        ),
-        Question(
-            id = "2",
-            text = "What year was Charles Bridge completed?",
-            type = "multiple_choice", // Example of type
-            options = listOf("1342", "1402", "1357", "1410"),
-            points = 3,
-            correctAnswer = "1357" // Correct answer
-        ),
-        Question(
-            id = "3",
-            text = "Enter the total length of Charles Bridge (in meters):",
-            type = "open_ended", // Example of type
-            points = 4,
-            correctAnswer = 50, // Correct answer
-            imageUrl = "https://example.com/charles-bridge.jpg" // Optional image URL
-        )
+@Composable
+fun OpenEndedQuestion(
+    answer: String?,
+    onAnswerChange: (String) -> Unit
+) {
+    OutlinedTextField(
+        value = answer.orEmpty(),
+        onValueChange = onAnswerChange,
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text("Your answer") }
     )
-
-
-    // Use a getter to return the mock questions
-    override val questions: SnapshotStateList<Question>
-        get() = mockQuestions
-
 }
+
 
 @Composable
 @Preview(showBackground = true)
 fun QuizPagePreview() {
-    // Preview the QuizPage with a MockQuizViewModel
     QuizPage(
         zoneName = "Charles Bridge",
-        quizViewModel = MockQuizViewModel(),  // Use the mock view model
         onSubmit = { answers ->
-            // Print answers to the log (simulate saving answers)
-            answers.forEach { (questionId, answer) ->
-                println("Question ID: $questionId, Answer: $answer")
-            }
+            println(answers)
         }
     )
-}*/
+}
