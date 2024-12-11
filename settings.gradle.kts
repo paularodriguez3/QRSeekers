@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "QR seekers"
+rootProject.name = "QR_Code_Reader"
 include(":app")
- 

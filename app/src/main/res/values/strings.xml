@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">QR seekers</string>
+    <string name="app_name">QR Code Reader</string>
+    <string name="escanear_c_digo_qr_txt">Escanear Código QR</string>
+    <string name="resultado_txt">Resultado:</string>
+    <string name="abrir_url_en_el_navegador_txt">ABRIR URL EN EL NAVEGADOR</string>
+    <string name="welcome_txt">¡Bienvenido/a a QR Code Reader! Haz click en el siguiente botón para comenzar a escanear</string>
 </resources>
