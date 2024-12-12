@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QRSeekers"
         tools:targetApi="31">
+        <meta-data
+            android:name="androidx.camera.core.CameraXConfig.DEFAULT_CONFIG_PROVIDER"
+            android:value="androidx.camera.camera2.Camera2Config$DefaultConfigProvider" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
