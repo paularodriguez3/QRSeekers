@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.qrseekers.ui.ForgotPasswordScreen
 import com.qrseekers.ui.Game
 import com.qrseekers.ui.GamePage
 import com.qrseekers.ui.HomePage
@@ -28,7 +28,6 @@ import com.qrseekers.ui.SignUpPage
 import com.qrseekers.ui.TeamPage
 import com.qrseekers.ui.WelcomeScreen
 import com.qrseekers.viewmodels.AuthViewModel
-import com.qrseekers.viewmodels.QuizViewModel
 
 @Composable
 fun AppNavigation (
@@ -70,6 +69,9 @@ fun AppNavigation (
                         }
                         composable(AppRoute.SIGNUP.route) {
                             SignUpPage(modifier, navController, authViewModel)
+                        }
+                        composable(AppRoute.FORGOT_PASSWORD.route) {
+                            ForgotPasswordScreen(navController)
                         }
                         composable(AppRoute.HOME.route) {
                             HomePage(modifier, navController, authViewModel)
@@ -125,6 +127,7 @@ enum class AppRoute(val route: String) {
     WELCOME("welcome"), // Add this route
     LOGIN("login"),
     SIGNUP("signup"),
+    FORGOT_PASSWORD("forgot_password"),
     HOME("home"),
     SCAN("scan"),
     PROFILE("profile"),

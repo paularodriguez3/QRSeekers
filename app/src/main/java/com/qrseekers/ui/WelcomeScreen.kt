@@ -1,6 +1,7 @@
 package com.qrseekers.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -33,7 +34,7 @@ fun WelcomeScreen(navController: NavController) {
             // Centrar logo y títulos
             Column(
                 modifier = Modifier
-                    .fillMaxHeight(0.6f), // Ocupa el 60% de la pantalla para centrar verticalmente
+                    .fillMaxHeight(0.6f),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -56,15 +57,24 @@ fun WelcomeScreen(navController: NavController) {
                     modifier = Modifier.size(250.dp)
                 )
             }
-            // Subir los botones con un espaciado adicional
+            // Botones y enlace de forgotten password
             Column(
                 modifier = Modifier
-                    .padding(bottom = 48.dp), // Espacio inferior adicional
+                    .padding(bottom = 48.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ReusableSimpleButton(navController, AppRoute.LOGIN.route, "Login")
-                Spacer(modifier = Modifier.height(32.dp)) // Más espacio entre los botones
+                Spacer(modifier = Modifier.height(32.dp))
                 ReusableSimpleButton(navController, AppRoute.SIGNUP.route, "Sign Up")
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Forgotten Password?",
+                    fontSize = 14.sp,
+                    color = Color(0xFF1E88E5),
+                    modifier = Modifier
+                        .clickable { navController.navigate(AppRoute.FORGOT_PASSWORD.route) }
+                        .padding(top = 8.dp)
+                )
             }
         }
     }
