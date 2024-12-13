@@ -30,7 +30,13 @@ fun WelcomeScreen(navController: NavController) {
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            // Centrar logo y títulos
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight(0.6f), // Ocupa el 60% de la pantalla para centrar verticalmente
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
                     text = "QRseekers",
                     fontSize = 32.sp,
@@ -50,9 +56,14 @@ fun WelcomeScreen(navController: NavController) {
                     modifier = Modifier.size(250.dp)
                 )
             }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            // Subir los botones con un espaciado adicional
+            Column(
+                modifier = Modifier
+                    .padding(bottom = 48.dp), // Espacio inferior adicional
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 ReusableSimpleButton(navController, AppRoute.LOGIN.route, "Login")
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp)) // Más espacio entre los botones
                 ReusableSimpleButton(navController, AppRoute.SIGNUP.route, "Sign Up")
             }
         }
