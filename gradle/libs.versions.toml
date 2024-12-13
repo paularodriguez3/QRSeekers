@@ -16,6 +16,7 @@ roomCommon = "2.6.1"
 cameraView = "1.4.0"
 cameraLifecycle = "1.4.0"
 cameraCore = "1.4.0"
+roomKtx = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,6 +41,7 @@ androidx-room-common = { group = "androidx.room", name = "room-common", version.
 androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
 androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraLifecycle" }
 androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraCore" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
