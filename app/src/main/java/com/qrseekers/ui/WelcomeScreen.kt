@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.qrseekers.AppRoute
 import com.qrseekers.MainActivity.Companion.ReusableSimpleButton
 import com.qrseekers.R
 
@@ -49,7 +50,7 @@ fun WelcomeScreen(navController: NavController) {
                     modifier = Modifier.size(250.dp)
                 )
             }
-            ReusableSimpleButton(navController, "quiz_location_screen", "Begin")
+            ReusableSimpleButton(navController, AppRoute.JOINGAME.route, "Begin")
         }
     }
 }

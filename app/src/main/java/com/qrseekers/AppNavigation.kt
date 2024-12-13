@@ -26,6 +26,7 @@ import com.qrseekers.ui.QuizPage
 import com.qrseekers.ui.ScanPage
 import com.qrseekers.ui.SignUpPage
 import com.qrseekers.ui.TeamPage
+import com.qrseekers.ui.WelcomeScreen
 import com.qrseekers.viewmodels.AuthViewModel
 import com.qrseekers.viewmodels.QuizViewModel
 
@@ -58,9 +59,12 @@ fun AppNavigation (
     ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = AppRoute.LOGIN.route,
+                        startDestination = AppRoute.WELCOME.route, // Start at WelcomeScreen
                         modifier = Modifier.padding(innerPadding)
                     ) {
+                        composable(AppRoute.WELCOME.route) {
+                            WelcomeScreen(navController)
+                        }
                         composable(AppRoute.LOGIN.route) {
                             LoginPage(modifier, navController, authViewModel)
                         }
@@ -76,16 +80,12 @@ fun AppNavigation (
                         composable(AppRoute.PROFILE.route) {
                             ProfilePage(modifier, navController)
                         }
-
                         composable(AppRoute.TEAM.route) {
-                            TeamPage(modifier, navController,authViewModel)
+                            TeamPage(modifier, navController, authViewModel)
                         }
-
                         composable(AppRoute.GAME.route) {
-                            GamePage(modifier, navController,authViewModel)
+                            GamePage(modifier, navController, authViewModel)
                         }
-
-
                         composable(AppRoute.JOINGAME.route) {
                             JoinGameScreen(
                                 games = listOf(
@@ -98,12 +98,13 @@ fun AppNavigation (
                             )
                         }
                         composable(AppRoute.QUIZ.route) {
-                            //QuizPage("Prague Castle", QuizViewModel(), onSubmit = { /* Handle quiz submission */ })
-                            QuizPage("Charles bridge",
-                                onSubmit = {submited -> /* Handle submition*/ })
-
+                            QuizPage(
+                                "Charles bridge",
+                                onSubmit = { submitted -> /* Handle submission */ }
+                            )
                         }
-        }
+                    }
+
     }
 
 
@@ -121,6 +122,7 @@ private fun ShowBottomBarCheck(
 
 // Enum for routes
 enum class AppRoute(val route: String) {
+    WELCOME("welcome"), // Add this route
     LOGIN("login"),
     SIGNUP("signup"),
     HOME("home"),
@@ -131,13 +133,13 @@ enum class AppRoute(val route: String) {
     JOINGAME("joingame"),
     GAME("game");
 
-
     companion object {
-        // all routes except LOGIN and SIGNUP
+        // Include routes with bottom navigation (modify as needed)
         val bottomNavRoutes = values()
-            .filterNot { it == LOGIN || it == SIGNUP }
+            .filterNot { it == LOGIN || it == SIGNUP || it == WELCOME }
             .map { it.route }
             .toSet()
     }
 }
+
 
