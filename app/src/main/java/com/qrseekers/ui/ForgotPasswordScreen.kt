@@ -3,7 +3,8 @@ package com.qrseekers.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,6 +15,8 @@ import androidx.navigation.NavController
 
 @Composable
 fun ForgotPasswordScreen(navController: NavController) {
+    var email by remember { mutableStateOf("") } // Estado para almacenar el valor del email
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,16 +37,25 @@ fun ForgotPasswordScreen(navController: NavController) {
             color = Color.Gray
         )
         Spacer(modifier = Modifier.height(16.dp))
-        // Placeholder for email input
-        Text(
-            text = "Email Input (add a TextField here)",
-            color = Color.Gray,
-            modifier = Modifier.padding(8.dp)
+
+        // Campo de entrada de texto para el email
+        TextField(
+            value = email,
+            onValueChange = { email = it }, // Actualiza el estado con el texto ingresado
+            placeholder = { Text("Add your email here") }, // Placeholder
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         )
+
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            // Add logic to handle password reset
-        }) {
+
+        Button(
+            onClick = {
+                // Lógica para manejar el restablecimiento de contraseña con el email
+                // Por ejemplo, puedes enviar el email a tu backend
+            }
+        ) {
             Text("Reset Password")
         }
     }
