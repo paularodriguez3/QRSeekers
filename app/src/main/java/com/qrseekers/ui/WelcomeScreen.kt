@@ -50,7 +50,11 @@ fun WelcomeScreen(navController: NavController) {
                     modifier = Modifier.size(250.dp)
                 )
             }
-            ReusableSimpleButton(navController, AppRoute.JOINGAME.route, "Begin")
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                ReusableSimpleButton(navController, AppRoute.LOGIN.route, "Login")
+                Spacer(modifier = Modifier.height(16.dp))
+                ReusableSimpleButton(navController, AppRoute.SIGNUP.route, "Sign Up")
+            }
         }
     }
 }
