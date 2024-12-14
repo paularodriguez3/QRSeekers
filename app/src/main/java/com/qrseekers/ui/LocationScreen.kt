@@ -148,7 +148,7 @@ fun LocationScreen(navController: NavController, locationName: String = "Default
 
         // Button
         Button(
-            onClick = { navController.navigate(AppRoute.QUIZ.route) },
+            onClick = { navController.navigate(AppRoute.SCAN.route) }, // Navigate to ScanPage
             modifier = Modifier
                 .fillMaxWidth(0.8f)
                 .height(56.dp),

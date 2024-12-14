@@ -130,6 +130,15 @@ fun AppNavigation(
                     onSubmit = { submitted -> /* Handle submission */ }
                 )
             }
+
+            composable(AppRoute.SCAN.route) {
+                ScanPage(
+                    modifier = Modifier,
+                    navController = navController,
+                    authViewModel = authViewModel
+                )
+            }
+
         }
     }
 }
