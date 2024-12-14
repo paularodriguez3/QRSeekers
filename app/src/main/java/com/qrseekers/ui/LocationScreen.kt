@@ -1,17 +1,21 @@
 package com.qrseekers.ui
 
+import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -24,6 +28,8 @@ import com.qrseekers.R
 
 @Composable
 fun LocationScreen(navController: NavController, locationName: String = "Default Location") {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,12 +82,21 @@ fun LocationScreen(navController: NavController, locationName: String = "Default
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Clickable location name
             Text(
                 text = locationName,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color(0xFF1E88E5),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.clickable {
+                    // Open Google Maps with the location
+                    val mapsIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(locationName)}")
+                    val mapIntent = Intent(Intent.ACTION_VIEW, mapsIntentUri).apply {
+                        setPackage("com.google.android.apps.maps") // Opens explicitly in Google Maps
+                    }
+                    context.startActivity(mapIntent)
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
