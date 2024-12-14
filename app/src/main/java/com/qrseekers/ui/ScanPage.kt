@@ -7,7 +7,9 @@ import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.OptIn
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
@@ -214,6 +216,7 @@ fun QRCodeScannerView(
 }
 
 // Image processing function
+@OptIn(ExperimentalGetImage::class)
 suspend fun processImageProxy(
     barcodeScanner: BarcodeScanner,
     imageProxy: ImageProxy,
@@ -232,9 +235,13 @@ suspend fun processImageProxy(
                 onQRCodeDetected(url)
             }
         } catch (e: Exception) {
-            // Handle scanning failure
+            // Handle scanning failure (optional logging or error handling)
         } finally {
-            mediaImage.close()
+            // Close the imageProxy to free resources
+            imageProxy.close()
         }
+    } else {
+        // If mediaImage is null, ensure the ImageProxy is closed to avoid memory leaks
+        imageProxy.close()
     }
 }

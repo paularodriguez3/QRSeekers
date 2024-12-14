@@ -1,12 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.services) // Add google-services plugin via alias
+    alias(libs.plugins.google.services) // Plugin para Firebase
 }
 
 android {
     namespace = "com.qrseekers"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.qrseekers"
@@ -51,33 +51,29 @@ android {
 }
 
 dependencies {
-
+    // Core AndroidX libraries
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.firebase.auth)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.runtime.livedata)
+
+    // Jetpack Compose core dependencies
+    implementation("androidx.compose.ui:ui:1.5.1")
+    implementation("androidx.compose.material:material:1.5.1")
+    implementation("androidx.compose.material:material-icons-core:1.5.1")
+    implementation("androidx.compose.material:material-icons-extended:1.5.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
+    implementation("androidx.navigation:navigation-compose:2.7.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.1")
+
+    // Material 3 dependencies
+    implementation("androidx.compose.material3:material3:1.2.1")
     implementation(libs.play.services.mlkit.barcode.scanning)
 
-    implementation(libs.androidx.room.common)
-    implementation(libs.androidx.camera.view)
-    implementation(libs.androidx.camera.lifecycle)
-    implementation(libs.androidx.camera.core)
-    implementation(libs.androidx.room.ktx)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    // Debugging tools for Jetpack Compose
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.1")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.1")
 
     // Firebase dependencies (BOM - Bill of Materials)
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
@@ -85,17 +81,25 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
 
-    // Jetpack Compose dependencies
-    implementation("androidx.compose.ui:ui:1.5.1")
-    implementation("androidx.compose.material:material:1.5.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
-
     // QR Code scanning (ZXing)
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.zxing:core:3.4.1")
 
-    // images for quizes
+    // Image loading (Coil)
     implementation("io.coil-kt:coil-compose:2.4.0")
 
+    // Room (if necessary)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+
+    // Camera (if necessary)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.core)
+
+    // Testing dependencies
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
+

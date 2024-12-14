@@ -77,8 +77,8 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            InfoRow(label = "participates:", value = "Prague game", navController, AppRoute.GAME, AppRoute.GAME)
-            InfoRow(label = "TEAM:", value = "onions", navController, AppRoute.TEAM, AppRoute.TEAM)
+            InfoRow(label = "participates:", value = "Prague game", navController, AppRoute.GAME.route, AppRoute.GAME.route)
+            InfoRow(label = "TEAM:", value = "onions", navController, AppRoute.TEAM.route, AppRoute.TEAM.route)
         }
 
         // Options Section
@@ -110,7 +110,7 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController) {
 }
 
 @Composable
-fun InfoRow(label: String, value: String, navController: NavController, editRoute: AppRoute, infoRoute: AppRoute) {
+fun InfoRow(label: String, value: String, navController: NavController, editRoute: String, infoRoute: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -125,15 +125,14 @@ fun InfoRow(label: String, value: String, navController: NavController, editRout
                 imageVector = Icons.Default.Edit, // Replace with appropriate edit icon
                 contentDescription = "Edit",
                 modifier = Modifier.clickable {
-                    navController.navigate(editRoute)
+                    navController.navigate(editRoute) // Pass the route as a String
                 }
             )
             Icon(
                 imageVector = Icons.Default.Info, // Replace with appropriate QR code icon
                 contentDescription = "Info",
                 modifier = Modifier.clickable {
-                    navController.navigate(infoRoute)
-
+                    navController.navigate(infoRoute) // Pass the route as a String
                 }
             )
         }
@@ -145,3 +144,4 @@ fun InfoRow(label: String, value: String, navController: NavController, editRout
 fun ProfilePreview() {
     ProfilePage(navController = rememberNavController())
 }
+
