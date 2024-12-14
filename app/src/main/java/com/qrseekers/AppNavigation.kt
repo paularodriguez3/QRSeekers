@@ -101,24 +101,27 @@ fun AppNavigation(
                 )
             }
             composable(
-                route = "${AppRoute.RULES.route}/{gameName}",
-                arguments = listOf(navArgument("gameName") { type = NavType.StringType })
+                route = "${AppRoute.RULES.route}/{gameName}/{location}",
+                arguments = listOf(
+                    navArgument("gameName") { type = NavType.StringType },
+                    navArgument("location") { type = NavType.StringType }
+                )
             ) { backStackEntry ->
-                val gameName = Uri.decode(backStackEntry.arguments?.getString("gameName") ?: "Default Game")
+                val gameName = Uri.decode(backStackEntry.arguments?.getString("gameName") ?: "Unknown Game")
+                val locationName = Uri.decode(backStackEntry.arguments?.getString("location") ?: "Unknown Location")
+                // Llamamos al RulesScreen correcto
                 RulesScreen(
                     navController = navController,
-                    gameName = gameName
+                    gameName = gameName,
+                    locationName = locationName // Pasa también la ubicación
                 )
             }
             composable(
-                route = "${AppRoute.LOCATION.route}/{locationName}",
-                arguments = listOf(navArgument("locationName") { type = NavType.StringType })
+                route = "${AppRoute.LOCATION.route}/{location}",
+                arguments = listOf(navArgument("location") { type = NavType.StringType })
             ) { backStackEntry ->
-                val locationName = Uri.decode(backStackEntry.arguments?.getString("locationName") ?: "Default Location")
-                LocationScreen(
-                    navController = navController,
-                    locationName = locationName
-                )
+                val locationName = Uri.decode(backStackEntry.arguments?.getString("location") ?: "Unknown Location")
+                LocationScreen(navController = navController, locationName = locationName)
             }
 
             composable(AppRoute.QUIZ.route) {

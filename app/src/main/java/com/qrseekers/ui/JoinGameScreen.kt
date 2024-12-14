@@ -34,19 +34,22 @@ fun JoinGameScreen(
             name = "Prague discovery",
             description = "Explore the hidden gems of Prague in this fun quiz!",
             imageRes = R.drawable.prague_image,
-            color = Color(0xFFFDE68A) // Amarillo claro
+            color = Color(0xFFFDE68A), // Amarillo claro
+            location = "Charles Bridge"
         ),
         Game(
             name = "Las Palmas discovery",
             description = "Uncover the vibrant culture of Las Palmas in this engaging quiz!",
             imageRes = R.drawable.las_palmas_image,
-            color = Color(0xFFBBF7D0) // Verde claro
+            color = Color(0xFFBBF7D0), // Verde claro
+            location = "Santa Ana Cathedral"
         ),
         Game(
             name = "QRseekers indoor",
             description = "Challenge yourself with this exciting indoor quiz!",
             imageRes = R.drawable.indoor_image,
-            color = Color(0xFFBFDBFE) // Azul claro
+            color = Color(0xFFBFDBFE), // Azul claro
+            location = "Student Union Hall"
         )
     )
 
@@ -112,8 +115,9 @@ fun JoinGameScreen(
         Button(
             onClick = {
                 selectedGame?.let { game ->
-                    val encodedGameName = Uri.encode(game.name) // Codificar el nombre del juego
-                    navController.navigate("${AppRoute.RULES.route}/$encodedGameName")
+                    val encodedGameName = Uri.encode(game.name)
+                    val encodedLocation = Uri.encode(game.location)
+                    navController.navigate("${AppRoute.RULES.route}/$encodedGameName/$encodedLocation")
                 }
             },
             modifier = Modifier
@@ -202,5 +206,6 @@ data class Game(
     val name: String,
     val description: String,
     val imageRes: Int,
-    val color: Color // Color de fondo de la tarjeta
+    val color: Color, // Color de fondo de la tarjeta
+    val location: String
 )

@@ -23,7 +23,7 @@ import com.qrseekers.AppRoute
 import com.qrseekers.R
 
 @Composable
-fun RulesScreen(navController: NavController, gameName: String) {
+fun RulesScreen(navController: NavController, gameName: String, locationName: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,7 +64,7 @@ fun RulesScreen(navController: NavController, gameName: String) {
 
         // Game Icon
         Image(
-            painter = painterResource(id = R.drawable.rules_icon), // Replace with your game rules icon resource
+            painter = painterResource(id = R.drawable.rules_icon),
             contentDescription = "Game Icon",
             modifier = Modifier.size(100.dp),
             contentScale = ContentScale.Fit
@@ -98,7 +98,7 @@ fun RulesScreen(navController: NavController, gameName: String) {
 
                 Text(
                     text = """
-                        1. Head to the designated location (We’ll provide the exact location in the next step).
+                        1. Head to the designated location.
                         2. Look for the QR code and scan it.
                         3. Answer the questions.
                         4. Answer all questions correctly to win! If you get any wrong, the game is over, and you’ll need to start again.
@@ -120,8 +120,8 @@ fun RulesScreen(navController: NavController, gameName: String) {
         // Continue Button
         Button(
             onClick = {
-                val locationName = Uri.encode("Charles Bridge") // Reemplazar con la ubicación real
-                navController.navigate("${AppRoute.LOCATION.route}/$locationName")
+                val encodedLocation = Uri.encode(locationName) // Codificamos la ubicación
+                navController.navigate("${AppRoute.LOCATION.route}/$encodedLocation")
             },
             modifier = Modifier
                 .fillMaxWidth()
