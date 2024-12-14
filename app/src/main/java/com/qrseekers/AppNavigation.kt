@@ -16,7 +16,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.qrseekers.ui.ForgotPasswordScreen
-import com.qrseekers.ui.Game
 import com.qrseekers.ui.GamePage
 import com.qrseekers.ui.HomePage
 import com.qrseekers.ui.JoinGameScreen
@@ -30,9 +29,10 @@ import com.qrseekers.ui.WelcomeScreen
 import com.qrseekers.viewmodels.AuthViewModel
 
 @Composable
-fun AppNavigation (
+fun AppNavigation(
     modifier: Modifier,
-    authViewModel: AuthViewModel){
+    authViewModel: AuthViewModel
+) {
     val navController = rememberNavController()
 
     val currentRoute = navController.currentBackStackEntry?.destination?.route
@@ -47,84 +47,76 @@ fun AppNavigation (
         showBottomBar.value = ShowBottomBarCheck(navController)
     }
 
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             if (showBottomBar.value) {
-                BottomNavigationBar(navController) // Show the bottom bar if true
+                BottomNavigationBar(navController)
             }
         }
     ) { innerPadding ->
-                    NavHost(
-                        navController = navController,
-                        startDestination = AppRoute.WELCOME.route, // Start at WelcomeScreen
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        composable(AppRoute.WELCOME.route) {
-                            WelcomeScreen(navController)
-                        }
-                        composable(AppRoute.LOGIN.route) {
-                            LoginPage(modifier, navController, authViewModel)
-                        }
-                        composable(AppRoute.SIGNUP.route) {
-                            SignUpPage(modifier, navController, authViewModel)
-                        }
-                        composable(AppRoute.FORGOT_PASSWORD.route) {
-                            ForgotPasswordScreen(navController)
-                        }
-                        composable(AppRoute.HOME.route) {
-                            HomePage(modifier, navController, authViewModel)
-                        }
-                        composable(AppRoute.SCAN.route) {
-                            ScanPage(modifier, navController, authViewModel)
-                        }
-                        composable(AppRoute.PROFILE.route) {
-                            ProfilePage(modifier, navController)
-                        }
-                        composable(AppRoute.TEAM.route) {
-                            TeamPage(modifier, navController, authViewModel)
-                        }
-                        composable(AppRoute.GAME.route) {
-                            GamePage(modifier, navController, authViewModel)
-                        }
-                        composable(AppRoute.JOINGAME.route) {
-                            JoinGameScreen(
-                                games = listOf(
-                                    Game(name = "Prague Discovery game", description = "Discover the heart of the city", imageRes = android.R.drawable.ic_dialog_map),
-                                    Game(name = "Las Palmas Game", description = "Explore historic landmarks", imageRes = android.R.drawable.ic_dialog_map),
-                                    Game(name = "ESN Indoor activity", description = "Solve the murder of our mascot", imageRes = android.R.drawable.ic_dialog_map)
-                                ),
-                                onGameSelected = { game -> /* Handle game selection */ },
-                                onImportGame = { /* Handle importing game */ }
-                            )
-                        }
-                        composable(AppRoute.QUIZ.route) {
-                            QuizPage(
-                                "Charles bridge",
-                                onSubmit = { submitted -> /* Handle submission */ }
-                            )
-                        }
+        NavHost(
+            navController = navController,
+            startDestination = AppRoute.WELCOME.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(AppRoute.WELCOME.route) {
+                WelcomeScreen(navController)
+            }
+            composable(AppRoute.LOGIN.route) {
+                LoginPage(modifier, navController, authViewModel)
+            }
+            composable(AppRoute.SIGNUP.route) {
+                SignUpPage(modifier, navController, authViewModel)
+            }
+            composable(AppRoute.FORGOT_PASSWORD.route) {
+                ForgotPasswordScreen(navController)
+            }
+            composable(AppRoute.HOME.route) {
+                HomePage(modifier, navController, authViewModel)
+            }
+            composable(AppRoute.SCAN.route) {
+                ScanPage(modifier, navController, authViewModel)
+            }
+            composable(AppRoute.PROFILE.route) {
+                ProfilePage(modifier, navController)
+            }
+            composable(AppRoute.TEAM.route) {
+                TeamPage(modifier, navController, authViewModel)
+            }
+            composable(AppRoute.GAME.route) {
+                GamePage(modifier, navController, authViewModel)
+            }
+            composable(AppRoute.JOINGAME.route) {
+                JoinGameScreen(
+                    onGameSelected = { game ->
+                        println("Game selected: ${game.name}")
+                        navController.navigate(AppRoute.QUIZ.route)
+                    },
+                    onImportGame = {
+                        println("Importing game...")
                     }
-
+                )
+            }
+            composable(AppRoute.QUIZ.route) {
+                QuizPage(
+                    "Charles bridge",
+                    onSubmit = { submitted -> /* Handle submission */ }
+                )
+            }
+        }
     }
-
-
 }
 
-
-private fun ShowBottomBarCheck(
-    navController: NavHostController
-): Boolean {
+private fun ShowBottomBarCheck(navController: NavHostController): Boolean {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
     return currentRoute?.let { route ->
         AppRoute.bottomNavRoutes.contains(route)
     } ?: false
 }
 
-// Enum for routes
 enum class AppRoute(val route: String) {
-    WELCOME("welcome"), // Add this route
+    WELCOME("welcome"),
     LOGIN("login"),
     SIGNUP("signup"),
     FORGOT_PASSWORD("forgot_password"),
@@ -137,12 +129,9 @@ enum class AppRoute(val route: String) {
     GAME("game");
 
     companion object {
-        // Include routes with bottom navigation (modify as needed)
         val bottomNavRoutes = values()
             .filterNot { it == LOGIN || it == SIGNUP || it == WELCOME }
             .map { it.route }
             .toSet()
     }
 }
-
-

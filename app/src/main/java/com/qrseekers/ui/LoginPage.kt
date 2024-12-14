@@ -81,7 +81,7 @@ fun LoginPage(
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Enter your username") },
+            label = { Text("Enter your email") },
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .padding(bottom = 8.dp)

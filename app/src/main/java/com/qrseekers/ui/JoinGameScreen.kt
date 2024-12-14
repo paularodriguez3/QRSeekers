@@ -1,141 +1,151 @@
 package com.qrseekers.ui
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun JoinGameScreen(
-    games: List<Game>,
     onGameSelected: (Game) -> Unit,
     onImportGame: () -> Unit
 ) {
-    // State to track the currently selected game
-    var selectedGame by remember { mutableStateOf(games.first()) }
+    val games = listOf(
+        Game(
+            name = "Prague discovery",
+            description = "Explore the hidden gems of Prague in this fun quiz!",
+            imageRes = android.R.drawable.ic_dialog_map
+        ),
+        Game(
+            name = "Las Palmas discovery",
+            description = "Uncover the vibrant culture of Las Palmas in this engaging quiz!",
+            imageRes = android.R.drawable.ic_dialog_map
+        ),
+        Game(
+            name = "QRseekers indoor",
+            description = "Challenge yourself with this exciting indoor quiz!",
+            imageRes = android.R.drawable.ic_dialog_map
+        )
+    )
+
+    var selectedGame by remember { mutableStateOf<Game?>(null) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFFFFFFF))
+                )
+            )
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // Scrollable game list
+        Text(
+            text = "Join a Game",
+            style = TextStyle(
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1E88E5)
+            ),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+
         LazyColumn(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(games.size) { index ->
                 val game = games[index]
-                GameItem(
+                GameCard(
                     game = game,
-                    isSelected = game == selectedGame,
-                    onSelect = { selectedGame = game }
+                    isSelected = selectedGame == game,
+                    onClick = { selectedGame = game }
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Import Game button with subtle styling
-        ClickableText(
-            text = AnnotatedString("Import game from file"),
-            onClick = { onImportGame() },
-            modifier = Modifier.padding(bottom = 8.dp),
-            style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Submit selection button
         Button(
-            onClick = { onGameSelected(selectedGame) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+            onClick = {
+                selectedGame?.let { onGameSelected(it) }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = selectedGame != null
         ) {
-            Text(text = "Submit Selection")
+            Text("Submit your selection")
         }
     }
 }
 
 @Composable
-fun GameItem(
+fun GameCard(
     game: Game,
     isSelected: Boolean,
-    onSelect: () -> Unit
+    onClick: () -> Unit
 ) {
-    // Game item with selectable functionality
-    val borderModifier = if (isSelected) {
-        Modifier.border(BorderStroke(4.dp, Color.Black), shape = RoundedCornerShape(8.dp))
-    } else {
-        Modifier
-    }
-
-    Row(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .selectable(selected = isSelected, onClick = onSelect)
-            .then(borderModifier)
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .clickable { onClick() },
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(8.dp)
     ) {
-        // Game information (name and description)
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(text = game.name, style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = game.description, style = MaterialTheme.typography.bodyMedium)
-        }
-
-        // Game image (right side)
-        Image(
-            painter = painterResource(id = game.imageRes),
-            contentDescription = game.name,
+        Row(
             modifier = Modifier
-                .size(80.dp)
-                .padding(8.dp),
-            contentScale = ContentScale.Crop
-        )
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = game.name,
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1E88E5)
+                    )
+                )
+                Text(
+                    text = game.description,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+                )
+            }
+            Image(
+                painter = painterResource(id = game.imageRes),
+                contentDescription = game.name,
+                modifier = Modifier.size(64.dp),
+                contentScale = ContentScale.Crop
+            )
+        }
     }
 }
 
-// Data model for a game
 data class Game(
     val name: String,
     val description: String,
     val imageRes: Int
 )
-
-// Usage example (you can replace this with actual data in your app)
-@Composable
-@Preview
-fun JoinGameScreenPreview() {
-    val games = listOf(
-        Game(name = "Game 1", description = "Discover the heart of the city", imageRes = android.R.drawable.ic_dialog_map),
-        Game(name = "Game 2", description = "Explore historic landmarks", imageRes = android.R.drawable.ic_dialog_map),
-        Game(name = "Game 3", description = "Solve the city mysteries", imageRes = android.R.drawable.ic_dialog_map)
-    )
-
-    JoinGameScreen(
-        games = games,
-        onGameSelected = { game -> /* Handle game selection */ },
-        onImportGame = { /* Handle importing game */ }
-    )
-}
