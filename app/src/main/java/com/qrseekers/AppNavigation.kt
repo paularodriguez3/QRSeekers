@@ -22,6 +22,7 @@ import com.qrseekers.ui.ForgotPasswordScreen
 import com.qrseekers.ui.GamePage
 import com.qrseekers.ui.HomePage
 import com.qrseekers.ui.JoinGameScreen
+import com.qrseekers.ui.LocationScreen
 import com.qrseekers.ui.LoginPage
 import com.qrseekers.ui.ProfilePage
 import com.qrseekers.ui.QuizPage
@@ -103,9 +104,23 @@ fun AppNavigation(
                 route = "${AppRoute.RULES.route}/{gameName}",
                 arguments = listOf(navArgument("gameName") { type = NavType.StringType })
             ) { backStackEntry ->
-                val gameName = Uri.decode(backStackEntry.arguments?.getString("gameName") ?: "Default Game") // Decodificar el nombre
-                RulesScreen(navController = navController, gameName = gameName)
+                val gameName = Uri.decode(backStackEntry.arguments?.getString("gameName") ?: "Default Game")
+                RulesScreen(
+                    navController = navController,
+                    gameName = gameName
+                )
             }
+            composable(
+                route = "${AppRoute.LOCATION.route}/{locationName}",
+                arguments = listOf(navArgument("locationName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val locationName = Uri.decode(backStackEntry.arguments?.getString("locationName") ?: "Default Location")
+                LocationScreen(
+                    navController = navController,
+                    locationName = locationName
+                )
+            }
+
             composable(AppRoute.QUIZ.route) {
                 QuizPage(
                     "Charles bridge",
@@ -135,7 +150,8 @@ enum class AppRoute(val route: String) {
     QUIZ("quiz"),
     JOINGAME("joingame"),
     GAME("game"),
-    RULES("rules");
+    RULES("rules"),
+    LOCATION("location");
 
     companion object {
         val bottomNavRoutes = values()

@@ -1,5 +1,6 @@
 package com.qrseekers.ui
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -118,7 +119,10 @@ fun RulesScreen(navController: NavController, gameName: String) {
 
         // Continue Button
         Button(
-            onClick = { navController.navigate(AppRoute.QUIZ.route) },
+            onClick = {
+                val locationName = Uri.encode("Charles Bridge") // Reemplazar con la ubicación real
+                navController.navigate("${AppRoute.LOCATION.route}/$locationName")
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)

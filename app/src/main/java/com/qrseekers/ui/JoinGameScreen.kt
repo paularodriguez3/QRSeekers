@@ -74,7 +74,7 @@ fun JoinGameScreen(
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Text(
             text = "Join a game\nSubmit your game selection when ready",
@@ -87,7 +87,7 @@ fun JoinGameScreen(
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         // Lista de juegos
         LazyColumn(
