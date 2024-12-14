@@ -1,21 +1,27 @@
 package com.qrseekers.ui
 
+import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.qrseekers.R
 
 @Composable
 fun ForgotPasswordScreen(navController: NavController) {
     var email by remember { mutableStateOf("") } // Estado para almacenar el valor del email
+
+    // Obtener el contexto local antes del onClick
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -24,39 +30,67 @@ fun ForgotPasswordScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Imagen superior
+        Image(
+            painter = painterResource(id = R.drawable.forgot_password_image), // Reemplaza con tu recurso de imagen
+            contentDescription = "Forgot Password Illustration",
+            modifier = Modifier
+                .height(200.dp)
+                .padding(bottom = 16.dp)
+        )
+
+        // Título
         Text(
             text = "Forgotten Password",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF1E88E5)
+            style = MaterialTheme.typography.headlineLarge,
+            color = Color(0xFF1E88E5),
+            textAlign = TextAlign.Center
         )
+
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Descripción
         Text(
             text = "Enter your email to reset your password",
-            fontSize = 16.sp,
-            color = Color.Gray
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray,
+            textAlign = TextAlign.Center
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         // Campo de entrada de texto para el email
-        TextField(
+        OutlinedTextField(
             value = email,
             onValueChange = { email = it }, // Actualiza el estado con el texto ingresado
-            placeholder = { Text("Add your email here") }, // Placeholder
+            label = { Text("Enter your email") },
+            placeholder = { Text("Add your email here") },
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .fillMaxWidth(0.9f)
+                .padding(bottom = 16.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
+        // Botón para restablecer contraseña
         Button(
             onClick = {
                 // Lógica para manejar el restablecimiento de contraseña con el email
-                // Por ejemplo, puedes enviar el email a tu backend
-            }
+                Toast.makeText(
+                    context, // Usa el contexto aquí
+                    "Password reset link sent to $email",
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .padding(vertical = 8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E88E5))
         ) {
-            Text("Reset Password")
+            Text(
+                text = "Reset Password",
+                color = Color.White,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
         }
     }
 }
