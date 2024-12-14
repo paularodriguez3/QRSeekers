@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.qrseekers.AppRoute
 import com.qrseekers.R
 import com.qrseekers.viewmodels.AuthState
 import com.qrseekers.viewmodels.AuthViewModel
@@ -40,9 +41,9 @@ fun LoginPage(
     // Monitor authentication state
     LaunchedEffect(authState.value) {
         when (authState.value) {
-            is AuthState.Authenticated -> navController.navigate("home") {
+            is AuthState.Authenticated -> navController.navigate(AppRoute.JOINGAME.route) {
                 // Clear backstack to prevent going back to login
-                popUpTo("login") { inclusive = true }
+                popUpTo(AppRoute.LOGIN.route) { inclusive = true }
             }
             is AuthState.Error -> Toast.makeText(
                 context,
