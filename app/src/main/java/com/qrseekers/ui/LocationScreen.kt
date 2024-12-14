@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -82,28 +84,61 @@ fun LocationScreen(navController: NavController, locationName: String = "Default
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Clickable location name
-            Text(
-                text = locationName,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color(0xFF1E88E5),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.clickable {
-                    // Open Google Maps with the location
-                    val mapsIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(locationName)}")
-                    val mapIntent = Intent(Intent.ACTION_VIEW, mapsIntentUri).apply {
-                        setPackage("com.google.android.apps.maps") // Opens explicitly in Google Maps
-                    }
-                    context.startActivity(mapIntent)
-                }
+            // Add a small icon to indicate maps
+            Icon(
+                painter = painterResource(id = R.drawable.map_icon),
+                contentDescription = "Open in Maps",
+                modifier = Modifier
+                    .size(20.dp)
+                    .clickable {
+                        val mapsIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(locationName)}")
+                        val mapIntent = Intent(Intent.ACTION_VIEW, mapsIntentUri).apply {
+                            setPackage("com.google.android.apps.maps")
+                        }
+                        context.startActivity(mapIntent)
+                    },
+                tint = Color(0xFF1E88E5)
             )
+
+            // Clickable location name with description
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = locationName,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF1E88E5),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .drawBehind {
+                            val underlineHeight = 2.dp.toPx()
+                            val y = size.height
+                            drawLine(
+                                color = Color(0xFF1E88E5),
+                                start = Offset(0f, y),
+                                end = Offset(size.width, y),
+                                strokeWidth = underlineHeight
+                            )
+                        }
+                        .clickable {
+                            val mapsIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(locationName)}")
+                            val mapIntent = Intent(Intent.ACTION_VIEW, mapsIntentUri).apply {
+                                setPackage("com.google.android.apps.maps")
+                            }
+                            context.startActivity(mapIntent)
+                        }
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Please head to this location and click the button when you arrive.",
-                fontSize = 16.sp,
+                text = "Tap on the location name to open it in Maps.",
+                fontSize = 14.sp,
                 color = Color.Gray,
                 textAlign = TextAlign.Center
             )
@@ -131,3 +166,4 @@ fun LocationScreen(navController: NavController, locationName: String = "Default
         }
     }
 }
+
