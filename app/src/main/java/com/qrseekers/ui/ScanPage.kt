@@ -15,16 +15,23 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
@@ -68,44 +75,106 @@ fun ScanPage(
         permissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
-    // Main UI
     Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFFFFFFF))
+                )
+            ),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Header
+        Text(
+            text = "QRseekers",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                color = Color(0xFF1E88E5),
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp,
+            ),
+            modifier = Modifier.padding(top = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         if (hasCameraPermission) {
             if (isCameraVisible) {
-                // Camera Preview
-                QRCodeScannerView(
-                    onQRCodeScanned = { url ->
-                        scannedUrl = url
-                        isCameraVisible = false
-                    }
-                )
-            } else {
-                // Results View
-                scannedUrl?.let { url ->
+                // Camera Preview with instructions
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
-                        text = "Scanned URL:",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                    Text(
-                        text = url,
-                        style = MaterialTheme.typography.bodyLarge,
+                        text = "Point the camera at a QR code to scan.",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = Color.Gray
+                        ),
+                        textAlign = TextAlign.Center,
                         modifier = Modifier.padding(8.dp)
                     )
 
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f) // Ensures the preview is square
+                            .background(Color.Black)
+                    ) {
+                        QRCodeScannerView(
+                            onQRCodeScanned = { url ->
+                                scannedUrl = url
+                                isCameraVisible = false
+                            }
+                        )
+                    }
+                }
+            } else {
+                // Results View
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Scanned Result",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        modifier = Modifier.padding(16.dp)
+                    )
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(0.9f),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFAFAFA)),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = scannedUrl ?: "No URL found",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Black,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     Row(
-                        modifier = Modifier.padding(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         // Open Browser Button
                         Button(
                             onClick = {
-                                if (Patterns.WEB_URL.matcher(url).matches()) {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                if (Patterns.WEB_URL.matcher(scannedUrl ?: "").matches()) {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(scannedUrl))
                                     context.startActivity(intent)
                                 } else {
                                     Toast.makeText(
@@ -114,9 +183,11 @@ fun ScanPage(
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
-                            }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E88E5))
                         ) {
                             Icon(Icons.Default.Search, contentDescription = "Open Browser")
+                            Spacer(modifier = Modifier.width(4.dp))
                             Text("Open URL")
                         }
 
@@ -125,26 +196,39 @@ fun ScanPage(
                             onClick = {
                                 scannedUrl = null
                                 isCameraVisible = true
-                            }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E88E5))
                         ) {
-                            Icon(Icons.Default.Search, contentDescription = "Rescan")
                             Text("Rescan")
                         }
                     }
                 }
             }
         } else {
-            // Permission not granted
-            Text(
-                text = "Camera permission is required to scan QR codes",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Button(
-                onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) }
+            // No permission granted
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Request Permission")
+                Text(
+                    text = "Camera permission is required to scan QR codes",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = Color.Red
+                    ),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E88E5))
+                ) {
+                    Text("Request Permission")
+                }
             }
         }
+
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
