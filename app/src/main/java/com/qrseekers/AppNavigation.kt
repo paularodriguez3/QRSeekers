@@ -1,6 +1,7 @@
 package com.qrseekers
 
 import BottomNavigationBar
+import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -11,10 +12,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.qrseekers.ui.ForgotPasswordScreen
 import com.qrseekers.ui.GamePage
 import com.qrseekers.ui.HomePage
@@ -22,6 +25,7 @@ import com.qrseekers.ui.JoinGameScreen
 import com.qrseekers.ui.LoginPage
 import com.qrseekers.ui.ProfilePage
 import com.qrseekers.ui.QuizPage
+import com.qrseekers.ui.RulesScreen
 import com.qrseekers.ui.ScanPage
 import com.qrseekers.ui.SignUpPage
 import com.qrseekers.ui.TeamPage
@@ -90,13 +94,17 @@ fun AppNavigation(
             composable(AppRoute.JOINGAME.route) {
                 JoinGameScreen(
                     onGameSelected = { game ->
-                        println("Game selected: ${game.name}")
-                        navController.navigate(AppRoute.QUIZ.route)
+                        navController.navigate("${AppRoute.RULES.route}/${game.name}")
                     },
-                    onImportGame = {
-                        println("Importing game...")
-                    }
+                    navController = navController
                 )
+            }
+            composable(
+                route = "${AppRoute.RULES.route}/{gameName}",
+                arguments = listOf(navArgument("gameName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val gameName = Uri.decode(backStackEntry.arguments?.getString("gameName") ?: "Default Game") // Decodificar el nombre
+                RulesScreen(navController = navController, gameName = gameName)
             }
             composable(AppRoute.QUIZ.route) {
                 QuizPage(
@@ -126,11 +134,12 @@ enum class AppRoute(val route: String) {
     TEAM("team"),
     QUIZ("quiz"),
     JOINGAME("joingame"),
-    GAME("game");
+    GAME("game"),
+    RULES("rules");
 
     companion object {
         val bottomNavRoutes = values()
-            .filterNot { it == LOGIN || it == SIGNUP || it == WELCOME }
+            .filterNot { it == LOGIN || it == SIGNUP || it == WELCOME || it == RULES }
             .map { it.route }
             .toSet()
     }

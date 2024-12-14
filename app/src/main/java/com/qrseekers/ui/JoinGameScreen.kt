@@ -1,5 +1,6 @@
 package com.qrseekers.ui
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,19 +14,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.qrseekers.AppRoute
 import com.qrseekers.R
 
 @Composable
 fun JoinGameScreen(
     onGameSelected: (Game) -> Unit,
-    onImportGame: () -> Unit
+    navController: NavController
 ) {
     val games = listOf(
         Game(
@@ -109,11 +111,14 @@ fun JoinGameScreen(
         // Botón de envío estilizado
         Button(
             onClick = {
-                selectedGame?.let { onGameSelected(it) }
+                selectedGame?.let { game ->
+                    val encodedGameName = Uri.encode(game.name) // Codificar el nombre del juego
+                    navController.navigate("${AppRoute.RULES.route}/$encodedGameName")
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp) // Altura más grande para mayor presencia
+                .height(56.dp)
                 .padding(horizontal = 16.dp),
             enabled = selectedGame != null,
             shape = RoundedCornerShape(16.dp),
