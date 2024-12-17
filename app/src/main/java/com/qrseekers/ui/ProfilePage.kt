@@ -1,8 +1,10 @@
 package com.qrseekers.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
@@ -11,15 +13,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.qrseekers.R
+import com.qrseekers.AppRoute
+import com.qrseekers.viewmodels.AuthViewModel
 
 @Composable
-fun ProfilePage(modifier: Modifier = Modifier, navController: NavController) {
+fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
     val user = FirebaseAuth.getInstance().currentUser
     val userId = user?.uid
 
@@ -45,55 +51,136 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController) {
         }
     }
 
-    // UI con datos dinámicos
-    Column(
+    Button(
+        onClick = {
+            authViewModel.signout() // Cerrar sesión
+            navController.navigate(AppRoute.WELCOME.route) {
+                popUpTo(AppRoute.WELCOME.route) { inclusive = true }
+            }
+        }
+    ) {
+        Text("Logout")
+    }
+
+
+    Surface(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(Color(0xFFE3F2FD))
     ) {
-        // Barra superior
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(onClick = { navController.popBackStack() }) {
-                Icon(Icons.Default.Close, contentDescription = "Close")
+            // Barra Superior
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close",
+                        tint = Color(0xFF1E88E5)
+                    )
+                }
+                Text(
+                    text = "QRseekers",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontSize = 28.sp,
+                    color = Color(0xFF1E88E5)
+                )
+                Spacer(modifier = Modifier.width(48.dp))
             }
-            Text("QRseekers", style = MaterialTheme.typography.titleMedium)
-        }
 
-        // Imagen de perfil
-        Image(
-            painter = painterResource(id = android.R.drawable.ic_menu_myplaces),
-            contentDescription = "Profile Picture",
-            modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape)
-                .padding(top = 8.dp, bottom = 16.dp)
-        )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // Nickname
-        Text(
-            text = nickname,
-            style = MaterialTheme.typography.titleLarge,
-            fontSize = 24.sp
-        )
+            // Imagen y nombre del usuario
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_square),
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(Color.White)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = nickname,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontSize = 24.sp,
+                    color = Color(0xFF1E88E5)
+                )
+            }
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        // Correo electrónico
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Default.Email, contentDescription = "Email")
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = email,
-                style = MaterialTheme.typography.bodyMedium,
-                fontSize = 16.sp
-            )
+            // Información del usuario
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(8.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = "Email Icon",
+                            tint = Color(0xFF1E88E5)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = email,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = 16.sp,
+                            color = Color.Gray
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Botón de Logout
+            Button(
+                onClick = {
+                    authViewModel.signout() // Llama a signout en AuthViewModel
+                    navController.navigate(AppRoute.WELCOME.route) {
+                        popUpTo(AppRoute.WELCOME.route) { inclusive = true } // Limpia el backstack
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E88E5)),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    text = "Log Out",
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
+

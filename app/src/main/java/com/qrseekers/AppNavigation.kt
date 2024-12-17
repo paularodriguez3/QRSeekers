@@ -84,8 +84,9 @@ fun AppNavigation(
                 ScanPage(modifier, navController, authViewModel)
             }
             composable(AppRoute.PROFILE.route) {
-                ProfilePage(modifier, navController)
+                ProfilePage(modifier, navController, authViewModel) // Añade authViewModel aquí
             }
+
             composable(AppRoute.TEAM.route) {
                 TeamPage(modifier, navController, authViewModel)
             }
@@ -172,7 +173,8 @@ enum class AppRoute(val route: String) {
                         it == SIGNUP ||
                         it == WELCOME ||
                         it == RULES ||
-                        it == FORGOT_PASSWORD // Excluir Forgot Password
+                        it == FORGOT_PASSWORD ||
+                        it == PROFILE
             }
             .map { it.route }
             .toSet()
