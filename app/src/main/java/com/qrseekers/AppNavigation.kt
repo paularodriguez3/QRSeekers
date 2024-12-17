@@ -167,7 +167,13 @@ enum class AppRoute(val route: String) {
 
     companion object {
         val bottomNavRoutes = values()
-            .filterNot { it == LOGIN || it == SIGNUP || it == WELCOME || it == RULES }
+            .filterNot {
+                it == LOGIN ||
+                        it == SIGNUP ||
+                        it == WELCOME ||
+                        it == RULES ||
+                        it == FORGOT_PASSWORD // Excluir Forgot Password
+            }
             .map { it.route }
             .toSet()
     }
