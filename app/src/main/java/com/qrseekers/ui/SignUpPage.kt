@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.qrseekers.AppRoute
 import com.qrseekers.R
 import com.qrseekers.viewmodels.AuthState
 import com.qrseekers.viewmodels.AuthViewModel
@@ -37,9 +38,9 @@ fun SignUpPage(modifier: Modifier = Modifier, navController: NavController, auth
     // Monitor authentication state
     LaunchedEffect(authState.value) {
         when (authState.value) {
-            is AuthState.Authenticated -> navController.navigate("home") {
+            is AuthState.Authenticated -> navController.navigate(AppRoute.WELCOME.route) {
                 // Clear backstack to prevent going back to signup
-                popUpTo("signup") { inclusive = true }
+                popUpTo(AppRoute.WELCOME.route) { inclusive = true }
             }
             is AuthState.Error -> Toast.makeText(
                 context,
@@ -116,7 +117,7 @@ fun SignUpPage(modifier: Modifier = Modifier, navController: NavController, auth
 
         // Register button
         Button(
-            onClick = { authViewModel.signup(email, password) },
+            onClick = { authViewModel.signup(email, password, nickname) }, // Ahora incluye nickname
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .padding(vertical = 8.dp),
