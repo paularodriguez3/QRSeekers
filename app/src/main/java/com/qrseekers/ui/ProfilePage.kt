@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -93,7 +94,8 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                 Text(
                     text = "QRseekers",
                     style = MaterialTheme.typography.headlineLarge,
-                    fontSize = 28.sp,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
                     color = Color(0xFF1E88E5)
                 )
                 Spacer(modifier = Modifier.width(48.dp))
