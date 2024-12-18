@@ -1,39 +1,52 @@
 # QRseekers
 
-The City Discovery Game app lets users explore cities by scanning QR codes hidden near landmarks. Each scanned code unlocks a set of questions—one mandatory and optional ones for bonus points—offering an engaging way to learn about local history, culture, and geography. The app tracks user progress, provides the next QR code location, and enables team-based play where one person answers questions on behalf of the entire team.
+QRseekers is an interactive app that invites you to explore cities in a fun and educational way. Scan QR codes hidden near landmarks, answer questions, and learn about local history, culture, and geography while competing to win. Can you conquer the challenge?
 
 <p align="center">
-  <img src="screen.png" alt="alt text">
+  <img src="app/screen.jpg" alt="QRseekers Appt" height="1000">
 </p>
 
+## **How it works**
 
-## Core Features
+1. **Create an account**: Sign up to start your adventure.  
+2. **Choose a game**: Select a city-specific game with unique routes and challenges.  
+3. **Follow the clues**: Head to the location provided by the app.  
+4. **Scan and answer**: Find the QR code at the site, scan it, and answer the related questions.  
+   - Answer all the questions correctly to win the game.  
+   - If you fail, you can try again.  
+<p>&nbsp;</p>
 
-### 1. **Exploration & QR Codes**
-- Players scan QR codes hidden near landmarks to trigger location-based questions.
-- After answering, the app provides directions to the next QR code, guiding users through a sequence of city discoveries.
+## **Key Features**
 
-### 2. **Question System**
-- **Obligatory Question**: Each location features one mandatory question that must be answered to progress.
-- **Optional Questions**: Users can answer additional questions for bonus points, creating an optional competitive element. The answer can be number, string also multiple choice questions are allowed. Optionally picture answers with manual validation can be incorporated.
-- **Catch the golden pig**: optionally there will be an open question for a password that can be obtained by catching a person "golden pig" in the city. 
+### 1. **Exploration with QR Codes**  
+- Players unlock challenges by scanning QR codes placed at specific landmarks in the city.  
+- Each code triggers unique questions that connects to the local history and culture.
 
-### 3. **Team Play**
-- **Single Response for Teams**: One team member answers questions on behalf of the entire team, and all members receive the same points.
-- **Team Rankings**: Teams are ranked based on their total accumulated points.
+### 2. **Question system**  
+- **Mandatory Questions**: Each location has questions that must be answered correctly to progress and win the game.  
+- Questions include multiple-choice options.
+  
+### 3. **Game selection**  
+- Choose from a variety of games, each tailored to a specific city or event.  
+- Each game offers a unique set of clues, QR codes, and challenges, perfect for exploring and learning in a fun way.  
 
-### 4. **Game Selection**
-- Players can choose from multiple city-specific games, each offering unique sets of QR codes and questions.
-- Games can be downloaded for offline play, allowing users to explore without relying on an internet connection.
+### 4. **Competition and progress**  
+- Successfully answer all questions to win the game.  
+- If you miss a mandatory question, you lose the challenge—but you can always try again.  
+<p>&nbsp;</p>
 
-### 5. **Progress & Leaderboards**
-- Real-time leaderboards show team rankings based on points earned. The board freezes for the last part of the game so the winner can be announced.
-- Individual players can track their team’s overall progress and ranking.
+## **User roles**
 
-### 6. **Customization & Scalability**
-- The app can easily adapt to different cities by uploading new sets of QR codes and corresponding questions.
-- Content creators or local partners can create new games for specific cities, events, or locations.
+### **Player**  
+- Registers on the app.  
+- Selects and participates in games.  
+- Scans QR codes and answers questions to complete the challenge.  
+<p>&nbsp;</p>
 
-### 7. User roless
-- **Administrator**: Responsible for opening and closing games, creating new games, and editing teams.
-- **Player**: Participates in the games and answers the questions.
+## **Why QRseekers is Unique**
+
+- **Educational and fun**: Learn about the city while enjoying an exciting challenge.  
+- **Easy to use**: Simply choose a game, follow the clues, and scan QR codes.  
+- **Perfect for everyone**: Ideal for tourists, families, and urban adventurers.
+
+  
