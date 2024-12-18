@@ -32,12 +32,15 @@ import com.qrseekers.ui.SignUpPage
 import com.qrseekers.ui.TeamPage
 import com.qrseekers.ui.WelcomeScreen
 import com.qrseekers.viewmodels.AuthViewModel
+import com.qrseekers.viewmodels.QuizViewModel
 
 @Composable
 fun AppNavigation(
     modifier: Modifier,
-    authViewModel: AuthViewModel
-) {
+    authViewModel: AuthViewModel,
+    quizViewModel : QuizViewModel,
+
+    ) {
     val navController = rememberNavController()
 
     val currentRoute = navController.currentBackStackEntry?.destination?.route
@@ -127,8 +130,12 @@ fun AppNavigation(
 
             composable(AppRoute.QUIZ.route) {
                 QuizPage(
-                    "Charles bridge",
-                    onSubmit = { submitted -> /* Handle submission */ }
+                    quizViewModel = quizViewModel,
+                    zoneId = "6lkp5c174aJFdccLItuA",
+                    zoneName = "Las aaa",
+                    onSubmit = { answers ->
+                        println("Answers submitted: $answers")
+                    }
                 )
             }
 

@@ -14,8 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -184,5 +186,19 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfilePagePreview() {
+
+    val context = LocalContext.current
+    val mockNavController = object : NavController(context) {} // Mock NavController
+    val mockAuthViewModel = AuthViewModel() // Replace with a mock or real instance if available
+
+    ProfilePage(
+        navController = mockNavController,
+        authViewModel = mockAuthViewModel
+    )
 }
 

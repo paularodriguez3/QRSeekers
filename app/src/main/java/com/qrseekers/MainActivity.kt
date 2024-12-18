@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.qrseekers.ui.theme.QRSeekersTheme
 import com.qrseekers.viewmodels.AuthViewModel
+import com.qrseekers.viewmodels.QuizViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,11 +33,14 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         val authViewModel: AuthViewModel by viewModels()
+        val quizViewModel: QuizViewModel by viewModels()
+
         setContent {
             QRSeekersTheme {
                 AppNavigation(
                     modifier = Modifier.fillMaxSize(),
-                    authViewModel = authViewModel
+                    authViewModel = authViewModel,
+                    quizViewModel = quizViewModel
                 )
             }
         }

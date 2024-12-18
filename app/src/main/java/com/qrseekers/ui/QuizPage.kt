@@ -10,23 +10,41 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.firestore.FirebaseFirestore
 import com.qrseekers.data.Question
+import kotlinx.coroutines.tasks.await
+import com.qrseekers.viewmodels.QuizViewModel
+import androidx.compose.runtime.livedata.observeAsState
+import coil.compose.AsyncImage
 
 
 @Composable
 fun QuizPage(
+    quizViewModel: QuizViewModel,
+    zoneId: String,
     zoneName: String,
     onSubmit: (Map<String, String>) -> Unit
 ) {
-    // Mock questions
-    val questions = listOf(
-        Question("1", "How many statues are there on Charles Bridge?", "multi",3, listOf("96", "45", "46", "78"), "96", null),
-        Question("2", "What year was Charles Bridge completed?", "multi",2, listOf("1342", "1402", "1357", "1410"), "1357", null),
-        Question("3", "Enter the total length of Charles Bridge (in meters):", "text",4, null, "516", "https://en.wikipedia.org/wiki/Charles_Bridge#/media/File:Charles_Bridge_-_Prague,_Czech_Republic_-_panoramio.jpg")
-    )
 
+    // remember the chosen answers
     var answers by remember { mutableStateOf(mutableMapOf<String, String>()) }
+
+
+    // Get the QuizViewModel instance
+    val quizViewModel: QuizViewModel = viewModel()
+
+    // Get the questions from the ViewModel
+    val questions by remember { quizViewModel.questions }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    // Fetch questions for the zone when the composable is first launched
+    LaunchedEffect(zoneId) {
+        quizViewModel.loadQuestions(zoneId)
+    }
+
+    // Display questions or an error message
+    errorMessage?.let { Text(text = it) }
 
     Column(
         modifier = Modifier
@@ -38,9 +56,8 @@ fun QuizPage(
             text = "ZONE: $zoneName",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.fillMaxWidth()
-                               .padding(bottom = 16.dp),
+                .padding(bottom = 16.dp),
             textAlign = TextAlign.Center
-
         )
 
         // List of questions
@@ -52,9 +69,9 @@ fun QuizPage(
                 val question = questions[index]
                 QuestionItem(
                     question = question,
-                    answer = answers[question.id],
+                    answer = quizViewModel.answers.value[question.id],
                     onAnswerChange = { newAnswer ->
-                        answers = answers.toMutableMap().apply { this[question.id] = newAnswer }
+                        quizViewModel.updateAnswer(question.id, newAnswer)
                     },
                     index = index + 1
                 )
@@ -63,7 +80,7 @@ fun QuizPage(
 
         // Submit button
         Button(
-            onClick = { onSubmit(answers) },
+            onClick = { onSubmit(quizViewModel.answers.value) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Submit")
@@ -154,14 +171,15 @@ fun OpenEndedQuestion(
     )
 }
 
-
-@Composable
 @Preview(showBackground = true)
+@Composable
 fun QuizPagePreview() {
     QuizPage(
-        zoneName = "Charles Bridge",
+        quizViewModel = viewModel(),
+        zoneId = "6lkp5c174aJFdccLItuA",
+        zoneName = "Las aaa",
         onSubmit = { answers ->
-            println(answers)
+            println("Answers submitted: $answers")
         }
     )
 }
