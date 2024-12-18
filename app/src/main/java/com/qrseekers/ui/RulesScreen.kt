@@ -1,6 +1,5 @@
 package com.qrseekers.ui
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,9 +20,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.qrseekers.AppRoute
 import com.qrseekers.R
+import com.qrseekers.viewmodels.AuthViewModel
+import com.qrseekers.viewmodels.GameViewModel
 
 @Composable
-fun RulesScreen(navController: NavController, gameName: String, locationName: String) {
+fun RulesScreen(navController: NavController, gameViewModel: GameViewModel) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +53,7 @@ fun RulesScreen(navController: NavController, gameName: String, locationName: St
 
         // Sub-header for Game Name
         Text(
-            text = "Rules for $gameName",
+            text = "${gameViewModel.currentGame.value?.name} Game Rules",
             style = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
@@ -120,8 +122,8 @@ fun RulesScreen(navController: NavController, gameName: String, locationName: St
         // Continue Button
         Button(
             onClick = {
-                val encodedLocation = Uri.encode(locationName) // Codificamos la ubicación
-                navController.navigate("${AppRoute.LOCATION.route}/$encodedLocation")
+                //todo: remove after //val encodedLocation = Uri.encode(locationName) // Codificamos la ubicación
+                navController.navigate(AppRoute.LOCATION.route)
             },
             modifier = Modifier
                 .fillMaxWidth()

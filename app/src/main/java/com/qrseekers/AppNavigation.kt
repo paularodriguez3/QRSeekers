@@ -1,7 +1,6 @@
 package com.qrseekers
 
 import BottomNavigationBar
-import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -12,17 +11,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.qrseekers.ui.ForgotPasswordScreen
 import com.qrseekers.ui.GamePage
 import com.qrseekers.ui.HomePage
 import com.qrseekers.ui.JoinGameScreen
-import com.qrseekers.ui.LocationScreen
+import com.qrseekers.ui.ZoneScreen
 import com.qrseekers.ui.LoginPage
 import com.qrseekers.ui.ProfilePage
 import com.qrseekers.ui.QuizPage
@@ -32,12 +29,19 @@ import com.qrseekers.ui.SignUpPage
 import com.qrseekers.ui.TeamPage
 import com.qrseekers.ui.WelcomeScreen
 import com.qrseekers.viewmodels.AuthViewModel
+import com.qrseekers.viewmodels.GameViewModel
+import com.qrseekers.viewmodels.QuizViewModel
+import com.qrseekers.viewmodels.ZoneViewModel
 
 @Composable
 fun AppNavigation(
     modifier: Modifier,
-    authViewModel: AuthViewModel
-) {
+    authViewModel: AuthViewModel,
+    quizViewModel : QuizViewModel,
+    gameViewModel: GameViewModel,
+    zoneViewModel: ZoneViewModel,
+
+    ) {
     val navController = rememberNavController()
 
     val currentRoute = navController.currentBackStackEntry?.destination?.route
@@ -62,7 +66,7 @@ fun AppNavigation(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = AppRoute.WELCOME.route,
+            startDestination = AppRoute.JOINGAME.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(AppRoute.WELCOME.route) {
@@ -95,40 +99,37 @@ fun AppNavigation(
             }
             composable(AppRoute.JOINGAME.route) {
                 JoinGameScreen(
-                    onGameSelected = { game ->
-                        navController.navigate("${AppRoute.RULES.route}/${game.name}")
-                    },
-                    navController = navController
+                    navController = navController,
+                    authViewModel = authViewModel,
+                    gameViewModel = gameViewModel,
+                    zoneViewModel = zoneViewModel,
                 )
             }
+
+
+
             composable(
-                route = "${AppRoute.RULES.route}/{gameName}/{location}",
-                arguments = listOf(
-                    navArgument("gameName") { type = NavType.StringType },
-                    navArgument("location") { type = NavType.StringType }
-                )
-            ) { backStackEntry ->
-                val gameName = Uri.decode(backStackEntry.arguments?.getString("gameName") ?: "Unknown Game")
-                val locationName = Uri.decode(backStackEntry.arguments?.getString("location") ?: "Unknown Location")
-                // Llamamos al RulesScreen correcto
+               AppRoute.RULES.route
+
+            ) {
                 RulesScreen(
                     navController = navController,
-                    gameName = gameName,
-                    locationName = locationName // Pasa también la ubicación
+                    gameViewModel = gameViewModel
+
                 )
             }
-            composable(
-                route = "${AppRoute.LOCATION.route}/{location}",
-                arguments = listOf(navArgument("location") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val locationName = Uri.decode(backStackEntry.arguments?.getString("location") ?: "Unknown Location")
-                LocationScreen(navController = navController, locationName = locationName)
+
+            composable(AppRoute.LOCATION.route) {
+                ZoneScreen(navController = navController, zoneViewModel = zoneViewModel)
             }
 
             composable(AppRoute.QUIZ.route) {
                 QuizPage(
-                    "Charles bridge",
-                    onSubmit = { submitted -> /* Handle submission */ }
+                    zoneViewModel = zoneViewModel,
+                    quizViewModel = quizViewModel,
+                    onSubmit = { answers ->
+                        println("Answers submitted: $answers")
+                    }
                 )
             }
 

@@ -8,14 +8,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -33,6 +36,9 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
     // Estados para almacenar los datos del usuario
     var nickname by remember { mutableStateOf("Loading...") }
     var email by remember { mutableStateOf("Loading...") }
+    var participates by remember { mutableStateOf("Loading...") }
+
+
 
     // Obtener datos del usuario desde Firestore
     LaunchedEffect(userId) {
@@ -43,11 +49,15 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                     if (document.exists()) {
                         nickname = document.getString("name") ?: "No Name"
                         email = document.getString("email") ?: "No Email"
+                        participates = document.getString("participates") ?: "None"
                     }
                 }
                 .addOnFailureListener {
                     nickname = "Error loading data"
                     email = "Error loading data"
+                    participates = "Error loading data"
+
+
                 }
         }
     }
@@ -154,6 +164,21 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                             color = Color.Gray
                         )
                     }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.LocationCity,
+                            contentDescription = "Participates",
+                            tint = Color(0xFF1E88E5)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = participates,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = 16.sp,
+                            color = Color.Gray
+                        )
+                    }
+
                 }
             }
 
@@ -184,5 +209,19 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfilePagePreview() {
+
+    val context = LocalContext.current
+    val mockNavController = object : NavController(context) {} // Mock NavController
+    val mockAuthViewModel = AuthViewModel() // Replace with a mock or real instance if available
+
+    ProfilePage(
+        navController = mockNavController,
+        authViewModel = mockAuthViewModel
+    )
 }
 

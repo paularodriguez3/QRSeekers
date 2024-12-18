@@ -1,6 +1,6 @@
 package com.qrseekers.ui
 
-import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,39 +21,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import com.qrseekers.AppRoute
-import com.qrseekers.R
+import com.qrseekers.data.Game
+import com.qrseekers.viewmodels.AuthViewModel
+import com.qrseekers.viewmodels.GameViewModel
+import com.qrseekers.viewmodels.ZoneViewModel
 
 @Composable
 fun JoinGameScreen(
-    onGameSelected: (Game) -> Unit,
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    gameViewModel: GameViewModel,
+    zoneViewModel: ZoneViewModel
 ) {
-    val games = listOf(
-        Game(
-            name = "Prague discovery",
-            description = "Explore the hidden gems of Prague in this fun quiz!",
-            imageRes = R.drawable.prague_image,
-            color = Color(0xFFFDE68A), // Amarillo claro
-            location = "Charles Bridge"
-        ),
-        Game(
-            name = "Las Palmas discovery",
-            description = "Uncover the vibrant culture of Las Palmas in this engaging quiz!",
-            imageRes = R.drawable.las_palmas_image,
-            color = Color(0xFFBBF7D0), // Verde claro
-            location = "Santa Ana Cathedral"
-        ),
-        Game(
-            name = "QRseekers indoor",
-            description = "Challenge yourself with this exciting indoor quiz!",
-            imageRes = R.drawable.indoor_image,
-            color = Color(0xFFBFDBFE), // Azul claro
-            location = "Student Union Hall"
-        )
-    )
 
     var selectedGame by remember { mutableStateOf<Game?>(null) }
+
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    // Fetch games from Firestore
+    LaunchedEffect(Unit) {
+        gameViewModel.loadGames()
+        zoneViewModel.loadZones()
+
+    }
+
+    // Optional: Display error message if needed
+    errorMessage?.let {
+        Text(text = it, color = MaterialTheme.colorScheme.error)
+    }
+
 
     Column(
         modifier = Modifier
@@ -99,8 +97,8 @@ fun JoinGameScreen(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(games.size) { index ->
-                val game = games[index]
+            items(gameViewModel.games.value.size) { index ->
+                val game = gameViewModel.games.value[index]
                 GameCard(
                     game = game,
                     isSelected = selectedGame == game,
@@ -114,10 +112,18 @@ fun JoinGameScreen(
         // Botón de envío estilizado
         Button(
             onClick = {
-                selectedGame?.let { game ->
-                    val encodedGameName = Uri.encode(game.name)
-                    val encodedLocation = Uri.encode(game.location)
-                    navController.navigate("${AppRoute.RULES.route}/$encodedGameName/$encodedLocation")
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@Button
+                selectedGame?.let {
+                    gameViewModel.setCurrentGame(it.id)
+                    Log.d("GameViewModel", "Set current game with ID: ${it.id}")
+
+                    authViewModel.setUserGameParticipation(userId, it.id)
+                    Log.d("AuthViewModel", "User $userId set to participate in game with ID: ${it.id}")
+
+                    zoneViewModel.setCurrentZone(gameViewModel.currentGame.value?.zones?.get(0) ?: "errorr")
+                    Log.d("ZoneViewModel", "Set current zone for game with ID: ${it.id}, Zone: ${gameViewModel.currentGame.value!!.zones.get(0) ?: "errorr"}")
+
+                    navController.navigate(AppRoute.RULES.route)
                 }
             },
             modifier = Modifier
@@ -143,6 +149,8 @@ fun JoinGameScreen(
     }
 }
 
+
+
 @Composable
 fun GameCard(
     game: Game,
@@ -155,12 +163,12 @@ fun GameCard(
             .clickable { onClick() }
             .then(
                 if (isSelected) Modifier
-                    .background(game.color.copy(alpha = 0.1f))
+                    .background(game.getColor().copy(alpha = 0.1f))
                     .border(4.dp, Color(0xFF1E88E5), RoundedCornerShape(16.dp))
                 else Modifier
             ),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = game.color),
+        colors = CardDefaults.cardColors(containerColor = game.getColor()),
         elevation = if (isSelected) CardDefaults.cardElevation(16.dp) else CardDefaults.cardElevation(8.dp)
     ) {
         Row(
@@ -192,7 +200,7 @@ fun GameCard(
             }
             // Imagen del juego
             Image(
-                painter = painterResource(id = game.imageRes),
+                painter = painterResource(id = game.getImageResId()),
                 contentDescription = game.name,
                 modifier = Modifier.size(64.dp),
                 contentScale = ContentScale.Crop
@@ -200,12 +208,3 @@ fun GameCard(
         }
     }
 }
-
-// Modelo de datos del juego
-data class Game(
-    val name: String,
-    val description: String,
-    val imageRes: Int,
-    val color: Color, // Color de fondo de la tarjeta
-    val location: String
-)

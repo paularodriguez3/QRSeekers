@@ -40,6 +40,7 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import com.qrseekers.AppRoute
 import com.qrseekers.viewmodels.AuthViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -99,6 +100,8 @@ fun ScanPage(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        //todo: also add posibility to manually type the password for quiz opening (6 digit number? now we have text)
 
         if (hasCameraPermission) {
             if (isCameraVisible) {
@@ -173,22 +176,14 @@ fun ScanPage(
                         // Open Browser Button
                         Button(
                             onClick = {
-                                if (Patterns.WEB_URL.matcher(scannedUrl ?: "").matches()) {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(scannedUrl))
-                                    context.startActivity(intent)
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Invalid URL",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                                navController.navigate(AppRoute.QUIZ.route)
+
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E88E5))
                         ) {
                             Icon(Icons.Default.Search, contentDescription = "Open Browser")
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Open URL")
+                            Text("Open quiz")
                         }
 
                         // Rescan Button
