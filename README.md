@@ -16,7 +16,7 @@ QRseekers is an interactive app that invites you to explore cities in a fun and 
    - If you fail, you can try again.  
 <p>&nbsp;</p>
 
-## **Key Features**
+## **Key features**
 
 ### 1. **Exploration with QR Codes**  
 - Players unlock challenges by scanning QR codes placed at specific landmarks in the city.  
@@ -43,7 +43,7 @@ QRseekers is an interactive app that invites you to explore cities in a fun and 
 - Scans QR codes and answers questions to complete the challenge.  
 <p>&nbsp;</p>
 
-## **Why QRseekers is Unique**
+## **Why QRseekers is unique**
 
 - **Educational and fun**: Learn about the city while enjoying an exciting challenge.  
 - **Easy to use**: Simply choose a game, follow the clues, and scan QR codes.  
