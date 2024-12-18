@@ -6,7 +6,6 @@ import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
-import com.qrseekers.data.Game
 import com.qrseekers.data.Zone
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await

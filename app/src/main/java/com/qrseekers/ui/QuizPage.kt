@@ -11,12 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.firebase.firestore.FirebaseFirestore
 import com.qrseekers.data.Question
-import kotlinx.coroutines.tasks.await
 import com.qrseekers.viewmodels.QuizViewModel
-import androidx.compose.runtime.livedata.observeAsState
 import coil.compose.AsyncImage
 import com.qrseekers.viewmodels.ZoneViewModel
 
@@ -32,10 +28,11 @@ fun QuizPage(
 
     // remember the chosen answers
     var answers by remember { mutableStateOf(mutableMapOf<String, String>()) }
+    // todo: check answers in quizview model route to screen with results after submit button (not if an answer for question is missing)
 
 
     // Get the QuizViewModel instance
-    val quizViewModel: QuizViewModel = viewModel()
+    //val quizViewModel: QuizViewModel = viewModel()
 
     // Get the questions from the ViewModel
     val questions by remember { quizViewModel.questions }

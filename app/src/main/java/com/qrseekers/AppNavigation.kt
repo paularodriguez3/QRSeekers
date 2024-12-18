@@ -125,8 +125,8 @@ fun AppNavigation(
 
             composable(AppRoute.QUIZ.route) {
                 QuizPage(
-                    quizViewModel = quizViewModel,
                     zoneViewModel = zoneViewModel,
+                    quizViewModel = quizViewModel,
                     onSubmit = { answers ->
                         println("Answers submitted: $answers")
                     }
