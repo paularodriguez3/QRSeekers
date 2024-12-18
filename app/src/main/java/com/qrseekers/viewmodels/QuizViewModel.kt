@@ -84,4 +84,6 @@ class QuizViewModel : ViewModel() {
         Log.d(logTag, "Updated answers: ${_answers.value}")
 
     }
+
+
 }

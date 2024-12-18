@@ -2,6 +2,7 @@ package com.qrseekers.ui
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -27,10 +27,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.qrseekers.AppRoute
 import com.qrseekers.R
+import com.qrseekers.viewmodels.ZoneViewModel
 
 @Composable
-fun LocationScreen(navController: NavController, locationName: String = "Default Location") {
+fun ZoneScreen(navController: NavController, zoneViewModel: ZoneViewModel) {
     val context = LocalContext.current
+    Log.d("ZoneScreen", "Current zone: ${zoneViewModel.currentZone.value}")
+
+
+
+    val zoneName = zoneViewModel.currentZone.value?.name ?: "Unknown Location"
 
     Column(
         modifier = Modifier
@@ -91,7 +97,7 @@ fun LocationScreen(navController: NavController, locationName: String = "Default
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
-                        val mapsIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(locationName)}")
+                        val mapsIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(zoneName)}")
                         val mapIntent = Intent(Intent.ACTION_VIEW, mapsIntentUri).apply {
                             setPackage("com.google.android.apps.maps")
                         }
@@ -104,31 +110,32 @@ fun LocationScreen(navController: NavController, locationName: String = "Default
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = locationName,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF1E88E5),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .drawBehind {
-                            val underlineHeight = 2.dp.toPx()
-                            val y = size.height
-                            drawLine(
-                                color = Color(0xFF1E88E5),
-                                start = Offset(0f, y),
-                                end = Offset(size.width, y),
-                                strokeWidth = underlineHeight
-                            )
-                        }
-                        .clickable {
-                            val mapsIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(locationName)}")
-                            val mapIntent = Intent(Intent.ACTION_VIEW, mapsIntentUri).apply {
-                                setPackage("com.google.android.apps.maps")
+                    Text(
+                        text = zoneName,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF1E88E5),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .drawBehind {
+                                val underlineHeight = 2.dp.toPx()
+                                val y = size.height
+                                drawLine(
+                                    color = Color(0xFF1E88E5),
+                                    start = Offset(0f, y),
+                                    end = Offset(size.width, y),
+                                    strokeWidth = underlineHeight
+                                )
                             }
-                            context.startActivity(mapIntent)
-                        }
-                )
+                            .clickable {
+                                val mapsIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(zoneName)}")
+                                val mapIntent = Intent(Intent.ACTION_VIEW, mapsIntentUri).apply {
+                                    setPackage("com.google.android.apps.maps")
+                                }
+                                context.startActivity(mapIntent)
+                            }
+                    )
+
 
                 Spacer(modifier = Modifier.width(8.dp))
 
@@ -143,6 +150,9 @@ fun LocationScreen(navController: NavController, locationName: String = "Default
                 textAlign = TextAlign.Center
             )
         }
+
+        // todo: show hint
+
 
         Spacer(modifier = Modifier.height(24.dp))
 

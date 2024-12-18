@@ -1,5 +1,6 @@
 package com.qrseekers.ui
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,15 +18,17 @@ import kotlinx.coroutines.tasks.await
 import com.qrseekers.viewmodels.QuizViewModel
 import androidx.compose.runtime.livedata.observeAsState
 import coil.compose.AsyncImage
+import com.qrseekers.viewmodels.ZoneViewModel
 
 
 @Composable
 fun QuizPage(
     quizViewModel: QuizViewModel,
-    zoneId: String,
-    zoneName: String,
+    zoneViewModel: ZoneViewModel,
     onSubmit: (Map<String, String>) -> Unit
 ) {
+    var zoneId = zoneViewModel.currentZone.value?.id
+    var zoneName = zoneViewModel.currentZone.value?.name
 
     // remember the chosen answers
     var answers by remember { mutableStateOf(mutableMapOf<String, String>()) }
@@ -40,7 +43,20 @@ fun QuizPage(
 
     // Fetch questions for the zone when the composable is first launched
     LaunchedEffect(zoneId) {
-        quizViewModel.loadQuestions(zoneId)
+        if (zoneId != null) {
+            try {
+                // Attempt to load the questions
+                quizViewModel.loadQuestions(zoneId)
+            } catch (e: Exception) {
+                // Handle errors (e.g., network issues, Firebase fetch issues)
+                errorMessage = "Error loading questions: ${e.message}"
+                Log.e("QuizScreen", "Error loading questions for zone $zoneId: ${e.message}")
+            }
+        } else {
+            // Handle case where zoneId is null
+            errorMessage = "Invalid zone ID"
+            Log.e("QuizScreen", "Invalid zone ID: $zoneId")
+        }
     }
 
     // Display questions or an error message
@@ -53,7 +69,7 @@ fun QuizPage(
     ) {
         // Zone title
         Text(
-            text = "ZONE: $zoneName",
+            text = "$zoneName",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.fillMaxWidth()
                 .padding(bottom = 16.dp),
@@ -174,12 +190,12 @@ fun OpenEndedQuestion(
 @Preview(showBackground = true)
 @Composable
 fun QuizPagePreview() {
-    QuizPage(
+    /*zoneId = "6lkp5c174aJFdccLItuA",
+    zoneName = "Las aaa"*/
+    /*QuizPage(
         quizViewModel = viewModel(),
-        zoneId = "6lkp5c174aJFdccLItuA",
-        zoneName = "Las aaa",
         onSubmit = { answers ->
             println("Answers submitted: $answers")
         }
-    )
+    )*/
 }

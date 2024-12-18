@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,6 +36,9 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
     // Estados para almacenar los datos del usuario
     var nickname by remember { mutableStateOf("Loading...") }
     var email by remember { mutableStateOf("Loading...") }
+    var participates by remember { mutableStateOf("Loading...") }
+
+
 
     // Obtener datos del usuario desde Firestore
     LaunchedEffect(userId) {
@@ -45,11 +49,15 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                     if (document.exists()) {
                         nickname = document.getString("name") ?: "No Name"
                         email = document.getString("email") ?: "No Email"
+                        participates = document.getString("participates") ?: "None"
                     }
                 }
                 .addOnFailureListener {
                     nickname = "Error loading data"
                     email = "Error loading data"
+                    participates = "Error loading data"
+
+
                 }
         }
     }
@@ -156,6 +164,21 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                             color = Color.Gray
                         )
                     }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.LocationCity,
+                            contentDescription = "Participates",
+                            tint = Color(0xFF1E88E5)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = participates,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = 16.sp,
+                            color = Color.Gray
+                        )
+                    }
+
                 }
             }
 
