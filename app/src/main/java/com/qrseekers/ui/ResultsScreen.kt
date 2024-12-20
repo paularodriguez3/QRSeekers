@@ -13,13 +13,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.qrseekers.AppRoute
 import com.qrseekers.MainActivity.Companion.ReusableSimpleButton
 import com.qrseekers.MainActivity.Companion.ReusableTitle
 import com.qrseekers.R
+import com.qrseekers.viewmodels.AuthViewModel
 
 @Composable
-fun GameOverScreen(navController: NavController, pointsParam: String?) {
-    val points = pointsParam ?: "0"
+fun GameOverScreen(navController: NavController, authViewModel: AuthViewModel) {
+
+    val points = authViewModel.user.value.points
 
     Scaffold(topBar = { ReusableTitle() }) { innerPadding ->
         Surface(
@@ -48,7 +51,7 @@ fun GameOverScreen(navController: NavController, pointsParam: String?) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(text = "You scored $points points", fontSize = 18.sp)
                 }
-                ReusableSimpleButton(navController, "quiz_location_screen", "Continue Playing")
+                ReusableSimpleButton(navController, AppRoute.JOINGAME.route, "Continue Playing")
             }
         }
     }
