@@ -5,4 +5,5 @@ data class Zone (
     val name: String = "None", // name of the zone
     val hint: String? = "", //hint for finding the qr code
     val questions: List<String>? = null, // ids of questions in a zone
+    val passkey: String = ""
 )

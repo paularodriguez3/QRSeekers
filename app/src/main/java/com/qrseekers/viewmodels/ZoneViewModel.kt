@@ -100,4 +100,21 @@ class ZoneViewModel : ViewModel() {
         _currentZone.value = null
         Log.d(logTag, "Current game cleared")
     }
+
+    // Function to compare the passkey with the current zone's passkey
+    fun comparePasskey(inputPasskey: String): Boolean {
+        val currentZone = _currentZone.value
+        return if (currentZone != null) {
+            if (currentZone.passkey == inputPasskey) {
+                Log.d(logTag, "Passkey is correct")
+                true // Return true if the passkey matches
+            } else {
+                Log.e(logTag, "Incorrect passkey")
+                false // Return false if the passkey doesn't match
+            }
+        } else {
+            Log.e(logTag, "No current zone set")
+            false // Return false if no zone is set
+        }
+    }
 }

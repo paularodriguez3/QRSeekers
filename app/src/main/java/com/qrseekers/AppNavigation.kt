@@ -94,11 +94,9 @@ fun AppNavigation(
             composable(AppRoute.FORGOT_PASSWORD.route) {
                 ForgotPasswordScreen(navController)
             }
-            composable(AppRoute.SCAN.route) {
-                ScanPage(modifier, navController, authViewModel)
-            }
+
             composable(AppRoute.PROFILE.route) {
-                ProfilePage(modifier, navController, authViewModel) // Añade authViewModel aquí
+                ProfilePage(modifier, navController, authViewModel)
             }
 
             composable(AppRoute.JOINGAME.route) {
@@ -140,7 +138,8 @@ fun AppNavigation(
                 ScanPage(
                     modifier = Modifier,
                     navController = navController,
-                    authViewModel = authViewModel
+                    zoneViewModel = zoneViewModel,
+                    authViewModel = authViewModel,
                 )
             }
 
