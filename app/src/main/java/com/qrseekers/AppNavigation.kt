@@ -7,6 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -29,6 +30,7 @@ import com.qrseekers.ui.ScanPage
 import com.qrseekers.ui.SignUpPage
 import com.qrseekers.ui.TeamPage
 import com.qrseekers.ui.WelcomeScreen
+import com.qrseekers.viewmodels.AuthState
 import com.qrseekers.viewmodels.AuthViewModel
 import com.qrseekers.viewmodels.GameViewModel
 import com.qrseekers.viewmodels.QuizViewModel
@@ -43,6 +45,9 @@ fun AppNavigation(
     zoneViewModel: ZoneViewModel,
 
     ) {
+    val authState by authViewModel.authState.observeAsState(initial = AuthState.Loading)
+
+
     val navController = rememberNavController()
 
     val currentRoute = navController.currentBackStackEntry?.destination?.route
@@ -53,8 +58,20 @@ fun AppNavigation(
     // State to track if bottom bar should be shown
     val showBottomBar = remember { mutableStateOf(true) }
 
+    // Check authentication state
+    LaunchedEffect(Unit) {
+        authViewModel.checkUserAuthentication()
+    }
+
     LaunchedEffect(navBackStackEntry) {
         showBottomBar.value = ShowBottomBarCheck(navController)
+    }
+
+
+    val startDestination = if (authState == AuthState.Authenticated) {
+        AppRoute.JOINGAME.route
+    } else {
+        AppRoute.LOGIN.route
     }
 
     Scaffold(
@@ -67,7 +84,7 @@ fun AppNavigation(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = AppRoute.JOINGAME.route,
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(AppRoute.WELCOME.route) {

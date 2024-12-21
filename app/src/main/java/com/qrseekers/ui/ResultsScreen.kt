@@ -14,8 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.qrseekers.AppRoute
-import com.qrseekers.MainActivity.Companion.ReusableSimpleButton
-import com.qrseekers.MainActivity.Companion.ReusableTitle
+import com.qrseekers.ui.components.*
 import com.qrseekers.R
 import com.qrseekers.viewmodels.AuthViewModel
 

@@ -51,39 +51,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    companion object {
-        @Composable
-        fun ReusableSimpleButton(navController: NavController, route: String, text: String) {
-            Button(
-                onClick = { navController.navigate(route) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-                    .height(50.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E88E5))
-            ) {
-                Text(text = text, color = Color.White, fontSize = 16.sp)
-            }
-        }
-
-        @OptIn(ExperimentalMaterial3Api::class)
-        @Composable
-        fun ReusableTitle() {
-            androidx.compose.material3.CenterAlignedTopAppBar(
-                colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFc8eefe),
-                    titleContentColor = Color(0xff639de8),
-                ),
-                title = {
-                    Text(
-                        text = "QRseekers",
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
-            )
-        }
-    }
 }

@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.firestore.FirebaseFirestore
-import com.qrseekers.MainActivity.Companion.ReusableTitle
+import com.qrseekers.ui.components.*
 
 data class Question(
     val id: String = "",

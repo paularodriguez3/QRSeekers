@@ -142,6 +142,26 @@ class AuthViewModel : ViewModel() {
         _user.value = _user.value.copy(points = _user.value.points + gamePoints)
 
     }
+
+    // Check if the user is authenticated
+    fun checkUserAuthentication(): Boolean {
+        _authState.value = AuthState.Loading // Set state to loading during the check
+
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            // User is authenticated, fetch additional user data from Firestore if needed
+            fetchUserFromFirestore(currentUser.uid)
+            return true
+        } else {
+            // User is not authenticated
+            _authState.value = AuthState.Unauthenticated
+            return false
+        }
+    }
+
+
+
+
 }
 
 // Definición del estado de autenticación

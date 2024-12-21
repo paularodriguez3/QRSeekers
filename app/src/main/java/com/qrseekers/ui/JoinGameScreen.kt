@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -24,6 +25,7 @@ import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.qrseekers.AppRoute
 import com.qrseekers.data.Game
+import com.qrseekers.viewmodels.AuthState
 import com.qrseekers.viewmodels.AuthViewModel
 import com.qrseekers.viewmodels.GameViewModel
 import com.qrseekers.viewmodels.ZoneViewModel
@@ -36,15 +38,31 @@ fun JoinGameScreen(
     zoneViewModel: ZoneViewModel
 ) {
 
+
     var selectedGame by remember { mutableStateOf<Game?>(null) }
 
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    // Fetch games from Firestore
-    LaunchedEffect(Unit) {
-        gameViewModel.loadGames()
-        zoneViewModel.loadZones()
+    // Observe authentication state
+    val authState by authViewModel.authState.observeAsState(AuthState.Loading)
 
+
+    // Handle navigation based on authentication state
+    LaunchedEffect(authState) {
+
+        when (authState) {
+            is AuthState.Unauthenticated -> {
+                navController.navigate(AppRoute.LOGIN.route) {
+                    popUpTo(AppRoute.JOINGAME.route) { inclusive = true }
+                }
+            }
+            is AuthState.Authenticated -> {
+                // Load game and zone data
+                gameViewModel.loadGames()
+                zoneViewModel.loadZones()
+            }
+            else -> Unit // Handle Loading or Error states if needed
+        }
     }
 
     // Optional: Display error message if needed
