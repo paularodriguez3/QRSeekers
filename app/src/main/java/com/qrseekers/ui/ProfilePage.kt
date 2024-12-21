@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.LocationCity
+import androidx.compose.material.icons.filled.Money
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,9 +25,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.qrseekers.R
 import com.qrseekers.AppRoute
 import com.qrseekers.viewmodels.AuthViewModel
+import com.qrseekers.R
+import com.qrseekers.data.User
 
 @Composable
 fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
@@ -37,6 +39,7 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
     var nickname by remember { mutableStateOf("Loading...") }
     var email by remember { mutableStateOf("Loading...") }
     var participates by remember { mutableStateOf("Loading...") }
+    var points by remember { mutableStateOf("Loading...") }
 
 
 
@@ -47,15 +50,18 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                 .get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        nickname = document.getString("name") ?: "No Name"
+                        nickname = document.getString("nickname") ?: "No game"
                         email = document.getString("email") ?: "No Email"
-                        participates = document.getString("participates") ?: "None"
+                        participates = document.getString("gameName") ?: "None" //todo: set game name into dbs in join game/rules
+                        //points =  document.getString("points") ?: "0"
                     }
                 }
                 .addOnFailureListener {
                     nickname = "Error loading data"
                     email = "Error loading data"
                     participates = "Error loading data"
+                    //points = "Error loading data"
+
 
 
                 }
@@ -178,6 +184,20 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                             color = Color.Gray
                         )
                     }
+                    /*Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Money, // todo: better icon for points
+                            contentDescription = "Points",
+                            tint = Color(0xFF1E88E5)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = points,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = 16.sp,
+                            color = Color.Gray
+                        )
+                    }*/
 
                 }
             }
@@ -224,4 +244,3 @@ fun ProfilePagePreview() {
         authViewModel = mockAuthViewModel
     )
 }
-

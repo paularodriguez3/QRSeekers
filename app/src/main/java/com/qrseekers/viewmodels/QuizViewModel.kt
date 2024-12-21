@@ -85,5 +85,42 @@ class QuizViewModel : ViewModel() {
 
     }
 
+    fun checkAnswers(onResult: (String, Int, Map<String, Boolean>) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val unansweredQuestions = questions.value.filterNot { it.id in _answers.value.keys }
+
+                // Check if there are unanswered questions
+                if (unansweredQuestions.isNotEmpty()) {
+                    val errorMessage = "Unanswered questions: ${unansweredQuestions.size}"
+                    onResult(errorMessage, 0, emptyMap())
+                    return@launch
+                }
+
+                var totalPoints = 0
+                val correctness = mutableMapOf<String, Boolean>()
+
+                // Validate answers and calculate points
+                for (question in questions.value) {
+                    val userAnswer = _answers.value[question.id].orEmpty()
+                    val isCorrect = userAnswer.equals(question.correctAnswer.toString(), true)
+
+                    correctness[question.id] = isCorrect
+                    if (isCorrect) {
+                        totalPoints += question.points
+                    }
+                }
+
+                // Return results to UI
+                onResult("All questions answered.", totalPoints, correctness)
+            } catch (e: Exception) {
+                Log.e(logTag, "Error checking answers: ${e.localizedMessage}")
+                onResult("Error: ${e.localizedMessage}", 0, emptyMap())
+            }
+        }
+    }
+
+
+
 
 }

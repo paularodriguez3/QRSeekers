@@ -117,7 +117,7 @@ fun JoinGameScreen(
                     gameViewModel.setCurrentGame(it.id)
                     Log.d("GameViewModel", "Set current game with ID: ${it.id}")
 
-                    authViewModel.setUserGameParticipation(userId, it.id)
+                    authViewModel.setUserGameParticipation(userId, it.id, it.name)
                     Log.d("AuthViewModel", "User $userId set to participate in game with ID: ${it.id}")
 
                     zoneViewModel.setCurrentZone(gameViewModel.currentGame.value?.zones?.get(0) ?: "errorr")

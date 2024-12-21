@@ -38,9 +38,9 @@ fun SignUpPage(modifier: Modifier = Modifier, navController: NavController, auth
     // Monitor authentication state
     LaunchedEffect(authState.value) {
         when (authState.value) {
-            is AuthState.Authenticated -> navController.navigate(AppRoute.WELCOME.route) {
+            is AuthState.Authenticated -> navController.navigate(AppRoute.JOINGAME.route) {
                 // Clear backstack to prevent going back to signup
-                popUpTo(AppRoute.WELCOME.route) { inclusive = true }
+                //popUpTo(AppRoute.JOINGAME.route) { inclusive = true }
             }
             is AuthState.Error -> Toast.makeText(
                 context,
