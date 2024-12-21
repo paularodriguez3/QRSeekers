@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.qrseekers.ui.ForgotPasswordScreen
+import com.qrseekers.ui.ResultsScreen
 import com.qrseekers.ui.GamePage
 import com.qrseekers.ui.HomePage
 import com.qrseekers.ui.JoinGameScreen
@@ -125,12 +126,11 @@ fun AppNavigation(
 
             composable(AppRoute.QUIZ.route) {
                 QuizPage(
+                    authViewModel = authViewModel,
                     zoneViewModel = zoneViewModel,
                     quizViewModel = quizViewModel,
-                    onSubmit = { answers ->
-                        println("Answers submitted: $answers")
-                    }
-                )
+                    navController = navController,
+                    )
             }
 
             composable(AppRoute.SCAN.route) {
@@ -139,6 +139,10 @@ fun AppNavigation(
                     navController = navController,
                     authViewModel = authViewModel
                 )
+            }
+
+            composable(AppRoute.RESULTS.route){
+                ResultsScreen(navController, authViewModel)
             }
 
         }
@@ -165,7 +169,8 @@ enum class AppRoute(val route: String) {
     JOINGAME("joingame"),
     GAME("game"),
     RULES("rules"),
-    LOCATION("location");
+    LOCATION("location"),
+    RESULTS("results");
 
     companion object {
         val bottomNavRoutes = values()

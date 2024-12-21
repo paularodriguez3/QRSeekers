@@ -20,7 +20,7 @@ import com.qrseekers.R
 import com.qrseekers.viewmodels.AuthViewModel
 
 @Composable
-fun GameOverScreen(navController: NavController, authViewModel: AuthViewModel) {
+fun ResultsScreen(navController: NavController, authViewModel: AuthViewModel) {
 
     val points = authViewModel.user.value.points
 
@@ -51,7 +51,7 @@ fun GameOverScreen(navController: NavController, authViewModel: AuthViewModel) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(text = "You scored $points points", fontSize = 18.sp)
                 }
-                ReusableSimpleButton(navController, AppRoute.JOINGAME.route, "Continue Playing")
+                ReusableSimpleButton(navController, AppRoute.JOINGAME.route, "Back to games")
             }
         }
     }
