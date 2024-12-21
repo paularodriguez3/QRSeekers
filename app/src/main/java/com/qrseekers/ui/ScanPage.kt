@@ -41,7 +41,9 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import com.qrseekers.AppRoute
+import com.qrseekers.ui.scan.ScanResultView
 import com.qrseekers.viewmodels.AuthViewModel
+import com.qrseekers.viewmodels.ZoneViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.Executors
@@ -50,7 +52,8 @@ import java.util.concurrent.Executors
 fun ScanPage(
     modifier: Modifier = Modifier,
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    zoneViewModel: ZoneViewModel,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -136,68 +139,18 @@ fun ScanPage(
                     }
                 }
             } else {
-                // Results View
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Scanned Result",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        modifier = Modifier.padding(16.dp)
-                    )
-
-                    Card(
-                        modifier = Modifier.fillMaxWidth(0.9f),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFAFAFA)),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = scannedUrl ?: "No URL found",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.Black,
-                                textAlign = TextAlign.Center
-                            )
-                        }
+                // Results view
+                ScanResultView(
+                    navController = navController,
+                    zoneViewModel = zoneViewModel,
+                    scannedUrl = scannedUrl,
+                    isCameraVisible = isCameraVisible,
+                    onRescan = {
+                        scannedUrl = null
+                        isCameraVisible = true
                     }
+                )
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        // Open Browser Button
-                        Button(
-                            onClick = {
-                                navController.navigate(AppRoute.QUIZ.route)
-
-                            },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E88E5))
-                        ) {
-                            Icon(Icons.Default.Search, contentDescription = "Open Browser")
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Open quiz")
-                        }
-
-                        // Rescan Button
-                        Button(
-                            onClick = {
-                                scannedUrl = null
-                                isCameraVisible = true
-                            },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E88E5))
-                        ) {
-                            Text("Rescan")
-                        }
-                    }
-                }
             }
         } else {
             // No permission granted

@@ -71,9 +71,6 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
     Button(
         onClick = {
             authViewModel.signout() // Cerrar sesión
-            navController.navigate(AppRoute.WELCOME.route) {
-                popUpTo(AppRoute.WELCOME.route) { inclusive = true }
-            }
         }
     ) {
         Text("Logout")
@@ -208,9 +205,6 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
             Button(
                 onClick = {
                     authViewModel.signout() // Llama a signout en AuthViewModel
-                    navController.navigate(AppRoute.WELCOME.route) {
-                        popUpTo(AppRoute.WELCOME.route) { inclusive = true } // Limpia el backstack
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
