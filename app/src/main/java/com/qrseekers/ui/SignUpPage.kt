@@ -2,6 +2,7 @@ package com.qrseekers.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -11,9 +12,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +27,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.qrseekers.AppRoute
 import com.qrseekers.R
+import com.qrseekers.ui.components.FillInPasswordField
+import com.qrseekers.ui.components.FillInTextField
 import com.qrseekers.viewmodels.AuthState
 import com.qrseekers.viewmodels.AuthViewModel
 
@@ -34,6 +41,12 @@ fun SignUpPage(modifier: Modifier = Modifier, navController: NavController, auth
 
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
+
+    val focusRequesterNickname = FocusRequester()
+    val focusRequesterEmail = FocusRequester()
+    val focusRequesterPassword = FocusRequester()
+    val keyboardController = LocalSoftwareKeyboardController.current // Get keyboard controller
+
 
     // Monitor authentication state
     LaunchedEffect(authState.value) {
@@ -75,43 +88,34 @@ fun SignUpPage(modifier: Modifier = Modifier, navController: NavController, auth
         Spacer(modifier = Modifier.height(16.dp))
 
         // Nickname input field
-        OutlinedTextField(
+        FillInTextField(
             value = nickname,
             onValueChange = { nickname = it },
-            label = { Text("Enter your nickname") },
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .padding(bottom = 8.dp)
+            label = "Enter your nickname",
+            modifier = Modifier.fillMaxWidth(0.9f).focusRequester(focusRequesterNickname),
+            imeAction = ImeAction.Next,
+            onImeAction = { focusRequesterEmail.requestFocus() }
         )
 
         // Email input field
-        OutlinedTextField(
+        FillInTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Enter your email") },
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .padding(bottom = 8.dp)
+            label = "Enter your email",
+            modifier = Modifier.fillMaxWidth(0.9f).focusRequester(focusRequesterEmail),
+            imeAction = ImeAction.Next,
+            onImeAction = {focusRequesterPassword.requestFocus()}
         )
 
         // Password input field
-        OutlinedTextField(
+        FillInPasswordField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Enter your password") },
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .padding(bottom = 16.dp),
-            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                val icon =
-                    if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
-                    )
-                }
+            label = "Enter your password",
+            modifier = Modifier.fillMaxWidth(0.9f).focusRequester(focusRequesterPassword),
+            imeAction = ImeAction.Done,
+            onImeAction = {
+                keyboardController?.hide()
             }
         )
 
@@ -130,5 +134,19 @@ fun SignUpPage(modifier: Modifier = Modifier, navController: NavController, auth
                 modifier = Modifier.padding(vertical = 8.dp)
             )
         }
+
+        Text(
+            text = "Back to login page",
+            color = Color.Blue.copy(alpha = 0.7f), // Blue color to indicate link
+            fontSize = 14.sp, // Slightly smaller font size
+            modifier = Modifier
+                .padding(top = 8.dp) // Add space above
+                .clickable {
+                    // Handle the click action for forgotten password
+                    navController.navigate(AppRoute.LOGIN.route) // Navigate to forgotten password screen
+                }
+
+        )
+
     }
 }
