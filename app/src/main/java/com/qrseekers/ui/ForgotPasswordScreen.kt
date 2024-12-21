@@ -7,14 +7,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.qrseekers.R
+import com.qrseekers.ui.components.FillInTextField
 
 @Composable
 fun ForgotPasswordScreen(navController: NavController) {
@@ -22,6 +27,10 @@ fun ForgotPasswordScreen(navController: NavController) {
 
     // Obtener el contexto local antes del onClick
     val context = LocalContext.current
+
+    // State to focus on next field
+    val focusRequesterEmail = FocusRequester()
+    val keyboardController = LocalSoftwareKeyboardController.current // Get keyboard controller
 
     Column(
         modifier = Modifier
@@ -60,14 +69,15 @@ fun ForgotPasswordScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Campo de entrada de texto para el email
-        OutlinedTextField(
+
+        FillInTextField(
             value = email,
-            onValueChange = { email = it }, // Actualiza el estado con el texto ingresado
-            label = { Text("Enter your email") },
-            placeholder = { Text("Add your email here") },
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .padding(bottom = 16.dp)
+            onValueChange = { email = it },
+            label = "Enter your email",
+            modifier = Modifier.fillMaxWidth(0.9f).focusRequester(focusRequesterEmail),
+            imeAction = ImeAction.Done,
+            onImeAction = {
+                keyboardController?.hide()            }
         )
 
         // Botón para restablecer contraseña

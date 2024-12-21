@@ -105,6 +105,16 @@ fun LoginPage(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Password input field
+        FillInPasswordField(
+            value = password,
+            onValueChange = { password = it },
+            label = "Enter your password",
+            modifier = Modifier.fillMaxWidth(0.9f).focusRequester(focusRequesterPassword),
+            imeAction = ImeAction.Done,
+            onImeAction = {
+                keyboardController?.hide()
+            }
+        )
 
 
 
