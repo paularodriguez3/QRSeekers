@@ -18,7 +18,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.qrseekers.ui.ForgotPasswordScreen
 import com.qrseekers.ui.ResultsScreen
-import com.qrseekers.ui.GamePage
 import com.qrseekers.ui.HomePage
 import com.qrseekers.ui.JoinGameScreen
 import com.qrseekers.ui.ZoneScreen
@@ -28,7 +27,6 @@ import com.qrseekers.ui.QuizPage
 import com.qrseekers.ui.RulesScreen
 import com.qrseekers.ui.ScanPage
 import com.qrseekers.ui.SignUpPage
-import com.qrseekers.ui.TeamPage
 import com.qrseekers.ui.WelcomeScreen
 import com.qrseekers.viewmodels.AuthState
 import com.qrseekers.viewmodels.AuthViewModel
@@ -87,9 +85,6 @@ fun AppNavigation(
             startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(AppRoute.WELCOME.route) {
-                WelcomeScreen(navController)
-            }
             composable(AppRoute.LOGIN.route) {
                 LoginPage(modifier, navController, authViewModel)
             }
@@ -99,9 +94,6 @@ fun AppNavigation(
             composable(AppRoute.FORGOT_PASSWORD.route) {
                 ForgotPasswordScreen(navController)
             }
-            composable(AppRoute.HOME.route) {
-                HomePage(modifier, navController, authViewModel)
-            }
             composable(AppRoute.SCAN.route) {
                 ScanPage(modifier, navController, authViewModel)
             }
@@ -109,12 +101,6 @@ fun AppNavigation(
                 ProfilePage(modifier, navController, authViewModel) // Añade authViewModel aquí
             }
 
-            composable(AppRoute.TEAM.route) {
-                TeamPage(modifier, navController, authViewModel)
-            }
-            composable(AppRoute.GAME.route) {
-                GamePage(modifier, navController, authViewModel)
-            }
             composable(AppRoute.JOINGAME.route) {
                 JoinGameScreen(
                     navController = navController,
@@ -137,7 +123,7 @@ fun AppNavigation(
                 )
             }
 
-            composable(AppRoute.LOCATION.route) {
+            composable(AppRoute.ZONE.route) {
                 ZoneScreen(navController = navController, zoneViewModel = zoneViewModel)
             }
 
@@ -174,19 +160,15 @@ private fun ShowBottomBarCheck(navController: NavHostController): Boolean {
 }
 
 enum class AppRoute(val route: String) {
-    WELCOME("welcome"),
     LOGIN("login"),
     SIGNUP("signup"),
     FORGOT_PASSWORD("forgot_password"),
-    HOME("home"),
     SCAN("scan"),
     PROFILE("profile"),
-    TEAM("team"),
     QUIZ("quiz"),
     JOINGAME("joingame"),
-    GAME("game"),
     RULES("rules"),
-    LOCATION("location"),
+    ZONE("zone"),
     RESULTS("results");
 
     companion object {
@@ -194,7 +176,6 @@ enum class AppRoute(val route: String) {
             .filterNot {
                 it == LOGIN ||
                         it == SIGNUP ||
-                        it == WELCOME ||
                         it == RULES ||
                         it == FORGOT_PASSWORD ||
                         it == PROFILE

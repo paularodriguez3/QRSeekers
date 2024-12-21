@@ -14,7 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.firestore.FirebaseFirestore
-import com.qrseekers.ui.components.*
+import com.qrseekers.ui.components.ReusableSimpleButton
+import com.qrseekers.ui.components.ReusableTitle
 
 data class Location(
     val id: String = "",

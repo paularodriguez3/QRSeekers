@@ -122,8 +122,7 @@ fun RulesScreen(navController: NavController, gameViewModel: GameViewModel) {
         // Continue Button
         Button(
             onClick = {
-                //todo: remove after //val encodedLocation = Uri.encode(locationName) // Codificamos la ubicación
-                navController.navigate(AppRoute.LOCATION.route)
+                navController.navigate(AppRoute.ZONE.route)
             },
             modifier = Modifier
                 .fillMaxWidth()
