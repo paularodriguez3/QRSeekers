@@ -19,8 +19,11 @@ import com.qrseekers.R
 import com.qrseekers.viewmodels.AuthViewModel
 
 @Composable
-fun ResultsScreen(navController: NavController, authViewModel: AuthViewModel) {
-
+fun ResultsScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+    allCorrect: Boolean // Nuevo parámetro para determinar si todas las respuestas son correctas
+) {
     val points = authViewModel.user.value.points
 
     Scaffold(topBar = { ReusableTitle() }) { innerPadding ->
@@ -40,8 +43,11 @@ fun ResultsScreen(navController: NavController, authViewModel: AuthViewModel) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(text = "GAME OVER", fontSize = 24.sp)
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = "Congratulations!")
-                    Spacer(modifier = Modifier.height(16.dp))
+                    // Mostrar "Congratulations!" solo si todas las respuestas son correctas
+                    if (allCorrect) {
+                        Text(text = "Congratulations!", fontSize = 20.sp, color = Color(0xFF1E88E5))
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                     Image(
                         painter = painterResource(id = R.drawable.logo_square),
                         contentDescription = "QRSeekers Logo",
@@ -55,3 +61,4 @@ fun ResultsScreen(navController: NavController, authViewModel: AuthViewModel) {
         }
     }
 }
+

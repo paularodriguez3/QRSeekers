@@ -143,9 +143,16 @@ fun AppNavigation(
                 )
             }
 
-            composable(AppRoute.RESULTS.route){
-                ResultsScreen(navController, authViewModel)
+            composable(AppRoute.RESULTS.route + "?allCorrect={allCorrect}") { backStackEntry ->
+                // Recuperar el valor del argumento "allCorrect" desde los argumentos de navegación
+                val allCorrect = backStackEntry.arguments?.getString("allCorrect")?.toBoolean() ?: false
+                ResultsScreen(
+                    navController = navController,
+                    authViewModel = authViewModel,
+                    allCorrect = allCorrect // Pasar el valor a ResultsScreen
+                )
             }
+
 
         }
     }

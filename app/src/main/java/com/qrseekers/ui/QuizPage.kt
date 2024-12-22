@@ -119,7 +119,8 @@ fun QuizPage(
                     }
                 } else {
                     authViewModel.addPoints(totalPoints)
-                    navController.navigate(AppRoute.RESULTS.route)
+                    val allCorrect = correctness.values.all { it } // Verificar si todas son correctas
+                    navController.navigate("${AppRoute.RESULTS.route}?allCorrect=$allCorrect") // Pasar el estado como argumento
                 }
             },
             modifier = Modifier
