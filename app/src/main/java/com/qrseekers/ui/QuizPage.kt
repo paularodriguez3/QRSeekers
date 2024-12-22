@@ -1,13 +1,18 @@
 package com.qrseekers.ui
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,7 +32,7 @@ fun QuizPage(
     quizViewModel: QuizViewModel,
     zoneViewModel: ZoneViewModel,
     navController: NavController,
-    ) {
+) {
     val zoneId = zoneViewModel.currentZone.value?.id
     val zoneName = zoneViewModel.currentZone.value?.name
 
@@ -47,20 +52,29 @@ fun QuizPage(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFFFFFFF))
+                )
+            )
             .padding(16.dp)
     ) {
+        // Header with Zone Name
         Text(
             text = zoneName.orEmpty(),
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF1E88E5),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
             textAlign = TextAlign.Center
         )
 
+        // Question List
         LazyColumn(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(questions.size) { index ->
                 val question = questions[index]
@@ -75,17 +89,21 @@ fun QuizPage(
             }
         }
 
-        // Total points displayed after submission
+        // Total points after submission
         if (isSubmitted) {
             Text(
                 text = "Total Points: $totalPoints",
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(bottom = 16.dp),
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1E88E5),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
                 textAlign = TextAlign.Center
             )
         }
 
-        // Submit/Continue button
+        // Submit/Continue Button
         Button(
             onClick = {
                 if (!isSubmitted) {
@@ -100,17 +118,25 @@ fun QuizPage(
                         }
                     }
                 } else {
-                    // Handle continue action
-                    Log.d("QuizPage", "Continue to next step")
                     authViewModel.addPoints(totalPoints)
-
-                    // invoked passed function that goes back to navigation
                     navController.navigate(AppRoute.RESULTS.route)
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isSubmitted) Color(0xFF1E88E5) else Color(0xFF6AB7FF),
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(16.dp),
+            elevation = ButtonDefaults.elevatedButtonElevation(8.dp)
         ) {
-            Text(if (isSubmitted) "Continue" else "Submit")
+            Text(
+                text = if (isSubmitted) "Continue" else "Submit",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 
@@ -128,6 +154,7 @@ fun QuizPage(
         )
     }
 }
+
 
 
 @Composable
@@ -198,7 +225,7 @@ fun MultipleChoiceOptions(
     isSubmitted: Boolean,
     correctAnswer: String?
 ) {
-    Column {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         options.forEach { option ->
             val isCorrect = isSubmitted && option == correctAnswer
             val isSelected = option == selectedOption
@@ -207,24 +234,37 @@ fun MultipleChoiceOptions(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable(enabled = !isSubmitted) { onOptionSelected(option) }
-                    .padding(4.dp)
+                    .padding(8.dp)
+                    .background(
+                        color = when {
+                            isSubmitted && isCorrect -> Color(0xFFD7FFEB) // Verde claro para opciones correctas
+                            isSubmitted && isSelected && !isCorrect -> Color(0xFFFFEBEE) // Rojo claro para incorrectas seleccionadas
+                            else -> Color.Transparent // Sin fondo antes de enviar
+                        },
+                        shape = RoundedCornerShape(8.dp)
+                    )
             ) {
                 RadioButton(
                     selected = isSelected,
-                    onClick = { if (!isSubmitted) onOptionSelected(option) }
+                    onClick = { if (!isSubmitted) onOptionSelected(option) },
+                    colors = RadioButtonDefaults.colors(
+                        selectedColor = when {
+                            isSubmitted && isCorrect -> Color(0xFF1E88E5) // Azul para opción correcta seleccionada
+                            isSubmitted && isSelected && !isCorrect -> MaterialTheme.colorScheme.error // Rojo para incorrecta seleccionada
+                            else -> MaterialTheme.colorScheme.onSurface // Color normal antes de enviar
+                        },
+                        unselectedColor = MaterialTheme.colorScheme.onSurface // Color normal antes de enviar
+                    )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = option,
-                    color = if (isSubmitted) {
-                        when {
-                            isCorrect -> MaterialTheme.colorScheme.primary
-                            isSelected -> MaterialTheme.colorScheme.error
-                            else -> MaterialTheme.colorScheme.onSurface
-                        }
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    }
+                    color = when {
+                        isSubmitted && isCorrect -> Color(0xFF1E88E5) // Azul para opción correcta
+                        isSubmitted && isSelected && !isCorrect -> MaterialTheme.colorScheme.error // Rojo para incorrecta seleccionada
+                        else -> MaterialTheme.colorScheme.onSurface // Texto normal antes de enviar
+                    },
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         }

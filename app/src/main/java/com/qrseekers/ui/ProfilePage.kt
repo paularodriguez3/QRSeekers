@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -80,7 +81,11 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
     Surface(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFFE3F2FD))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB)) // Azul claro consistente
+                )
+            )
     ) {
         Column(
             modifier = Modifier
