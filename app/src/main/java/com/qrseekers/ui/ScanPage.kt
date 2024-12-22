@@ -24,6 +24,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -79,106 +80,111 @@ fun ScanPage(
         permissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
-    Column(
-        modifier = modifier
+    Box(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFFFFFFF))
+                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFFFFFFF)) // Gradiente consistente
                 )
-            ),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
+            )
     ) {
-        // Header
-        Text(
-            text = "QRseekers",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                color = Color(0xFF1E88E5),
-                fontWeight = FontWeight.Bold,
-                fontSize = 32.sp,
-            ),
-            modifier = Modifier.padding(top = 16.dp)
-        )
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Header
+            Text(
+                text = "QRseekers",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    color = Color(0xFF1E88E5),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 32.sp,
+                ),
+                modifier = Modifier.padding(top = 16.dp)
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        //todo: also add posibility to manually type the password for quiz opening (6 digit number? now we have text)
+            // Condicional para manejar cámara o resultados
+            if (hasCameraPermission) {
+                if (isCameraVisible) {
+                    // Cámara con instrucciones
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Point the camera at a QR code to scan.",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = Color.Gray
+                            ),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(8.dp)
+                        )
 
-        if (hasCameraPermission) {
-            if (isCameraVisible) {
-                // Camera Preview with instructions
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(1f) // Mantiene proporción cuadrada
+                                .clip(RoundedCornerShape(16.dp)) // Bordes redondeados
+                                .background(Color.Black) // Fondo negro para la cámara
+                        ) {
+                            QRCodeScannerView(
+                                onQRCodeScanned = { url ->
+                                    scannedUrl = url
+                                    isCameraVisible = false
+                                }
+                            )
+                        }
+                    }
+                } else {
+                    // Resultados después del escaneo
+                    ScanResultView(
+                        navController = navController,
+                        zoneViewModel = zoneViewModel,
+                        scannedUrl = scannedUrl,
+                        isCameraVisible = isCameraVisible,
+                        onRescan = {
+                            scannedUrl = null
+                            isCameraVisible = true
+                        }
+                    )
+                }
+            } else {
+                // Sin permiso de cámara
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Point the camera at a QR code to scan.",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.Gray
+                        text = "Camera permission is required to scan QR codes",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            color = Color.Red
                         ),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(8.dp)
+                        textAlign = TextAlign.Center
                     )
-
                     Spacer(modifier = Modifier.height(16.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f) // Ensures the preview is square
-                            .background(Color.Black)
+                    Button(
+                        onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E88E5))
                     ) {
-                        QRCodeScannerView(
-                            onQRCodeScanned = { url ->
-                                scannedUrl = url
-                                isCameraVisible = false
-                            }
-                        )
+                        Text("Request Permission")
                     }
                 }
-            } else {
-                // Results view
-                ScanResultView(
-                    navController = navController,
-                    zoneViewModel = zoneViewModel,
-                    scannedUrl = scannedUrl,
-                    isCameraVisible = isCameraVisible,
-                    onRescan = {
-                        scannedUrl = null
-                        isCameraVisible = true
-                    }
-                )
+            }
 
-            }
-        } else {
-            // No permission granted
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Camera permission is required to scan QR codes",
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        color = Color.Red
-                    ),
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E88E5))
-                ) {
-                    Text("Request Permission")
-                }
-            }
+            Spacer(modifier = Modifier.height(24.dp))
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
     }
 }
+
 
 @Composable
 fun QRCodeScannerView(
