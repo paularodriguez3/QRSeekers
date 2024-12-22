@@ -33,87 +33,93 @@ fun ResultsScreen(
 ) {
     val points = authViewModel.user.value.points
 
-    Scaffold(topBar = { ReusableTitle() }) { innerPadding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color(0xFFE3F2FD), Color(0xFFFFFFFF))
-                    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFFFFFFF)) // Difuminación azul claro a blanco
                 )
-                .padding(innerPadding)
+            )
+            .padding(16.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    // Header
-                    Text(
-                        text = "GAME OVER",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E88E5),
-                        textAlign = TextAlign.Center
-                    )
+                // Título principal
+                Text(
+                    text = "QRseekers",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1E88E5),
+                    textAlign = TextAlign.Center
+                )
 
-                    // Congratulations message if all correct
-                    if (allCorrect) {
-                        Text(
-                            text = "Congratulations!",
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF4CAF50), // Verde para éxito
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                Spacer(modifier = Modifier.height(24.dp)) // Más espacio entre títulos
 
-                    // Logo
-                    Image(
-                        painter = painterResource(id = R.drawable.logo_square),
-                        contentDescription = "QRSeekers Logo",
-                        modifier = Modifier.size(150.dp)
-                    )
+                // Subtítulo GAME OVER
+                Text(
+                    text = "GAME OVER",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1E88E5),
+                    textAlign = TextAlign.Center
+                )
 
-                    // Points scored
-                    Text(
-                        text = "You scored $points points",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFF1E88E5),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                // Nuevo subtítulo motivador
+                Text(
+                    text = if (allCorrect) "You conquered this challenge!" else "Keep trying for a better score!",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = if (allCorrect) Color(0xFF4CAF50) else Color(0xFF1E88E5), // Verde o Azul según el resultado
+                    textAlign = TextAlign.Center
+                )
 
-                // Back to games button
-                Button(
-                    onClick = { navController.navigate(AppRoute.JOINGAME.route) },
+                // Logo central
+                Image(
+                    painter = painterResource(id = R.drawable.logo_square),
+                    contentDescription = "QRSeekers Logo",
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF1E88E5),
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text(
-                        text = "Back to games",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                        .size(150.dp)
+                        .padding(vertical = 16.dp)
+                )
+
+                // Puntos ganados
+                Text(
+                    text = "You scored $points points",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF1E88E5),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            // Botón para regresar
+            Button(
+                onClick = { navController.navigate(AppRoute.JOINGAME.route) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF1E88E5),
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    text = "Back to games",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
 }
-
 
