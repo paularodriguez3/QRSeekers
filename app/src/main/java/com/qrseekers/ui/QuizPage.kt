@@ -43,105 +43,118 @@ fun QuizPage(
     var isSubmitted by remember { mutableStateOf(false) }
     var showPopup by remember { mutableStateOf(false) }
 
+    // Reiniciar estado del quiz al entrar
     LaunchedEffect(zoneId) {
         if (zoneId != null) {
+            quizViewModel.resetQuiz()
             quizViewModel.loadQuestions(zoneId)
+            isSubmitted = false
+            totalPoints = 0
+            correctness = emptyMap()
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFFFFFFF))
+                    colors = listOf(Color(0xFFBBDEFB), Color(0xFFFFFFFF)) // Azul claro a blanco
                 )
             )
             .padding(16.dp)
     ) {
-        // Header with Zone Name
-        Text(
-            text = zoneName.orEmpty(),
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF1E88E5),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            textAlign = TextAlign.Center
-        )
-
-        // Question List
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
         ) {
-            items(questions.size) { index ->
-                val question = questions[index]
-                QuestionItem(
-                    question = question,
-                    answer = answers[question.id],
-                    onAnswerChange = { newAnswer -> quizViewModel.updateAnswer(question.id, newAnswer) },
-                    index = index + 1,
-                    isSubmitted = isSubmitted,
-                    isCorrect = correctness[question.id]
+            // Título del Quiz
+            Text(
+                text = zoneName.orEmpty(),
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1E88E5),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+            )
+
+            // Lista de Preguntas
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(questions.size) { index ->
+                    val question = questions[index]
+                    QuestionItem(
+                        question = question,
+                        answer = answers[question.id],
+                        onAnswerChange = { newAnswer -> quizViewModel.updateAnswer(question.id, newAnswer) },
+                        index = index + 1,
+                        isSubmitted = isSubmitted,
+                        isCorrect = correctness[question.id]
+                    )
+                }
+            }
+
+            // Puntos totales después de enviar
+            if (isSubmitted) {
+                Text(
+                    text = "Total Points: $totalPoints",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1E88E5),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                )
+            }
+
+            // Botón Submit/Continue
+            Button(
+                onClick = {
+                    if (!isSubmitted) {
+                        val unansweredQuestions = questions.any { question -> answers[question.id].isNullOrEmpty() }
+                        if (unansweredQuestions) {
+                            showPopup = true
+                        } else {
+                            quizViewModel.checkAnswers { _, points, correctnessMap ->
+                                totalPoints = points
+                                correctness = correctnessMap
+                                isSubmitted = true
+                            }
+                        }
+                    } else {
+                        authViewModel.addPoints(totalPoints)
+                        val allCorrect = correctness.values.all { it }
+                        navController.navigate("${AppRoute.RESULTS.route}?allCorrect=$allCorrect")
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isSubmitted) Color(0xFF1E88E5) else Color(0xFF6AB7FF),
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    text = if (isSubmitted) "Continue" else "Submit",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
-
-        // Total points after submission
-        if (isSubmitted) {
-            Text(
-                text = "Total Points: $totalPoints",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E88E5),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                textAlign = TextAlign.Center
-            )
-        }
-
-        // Submit/Continue Button
-        Button(
-            onClick = {
-                if (!isSubmitted) {
-                    val unansweredQuestions = questions.any { question -> answers[question.id].isNullOrEmpty() }
-                    if (unansweredQuestions) {
-                        showPopup = true
-                    } else {
-                        quizViewModel.checkAnswers { _, points, correctnessMap ->
-                            totalPoints = points
-                            correctness = correctnessMap
-                            isSubmitted = true
-                        }
-                    }
-                } else {
-                    authViewModel.addPoints(totalPoints)
-                    val allCorrect = correctness.values.all { it } // Verificar si todas son correctas
-                    navController.navigate("${AppRoute.RESULTS.route}?allCorrect=$allCorrect") // Pasar el estado como argumento
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (isSubmitted) Color(0xFF1E88E5) else Color(0xFF6AB7FF),
-                contentColor = Color.White
-            ),
-            shape = RoundedCornerShape(16.dp),
-            elevation = ButtonDefaults.elevatedButtonElevation(8.dp)
-        ) {
-            Text(
-                text = if (isSubmitted) "Continue" else "Submit",
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
-            )
-        }
     }
 
-    // Popup for unanswered questions
+    // Popup para preguntas no respondidas
     if (showPopup) {
         AlertDialog(
             onDismissRequest = { showPopup = false },
@@ -155,6 +168,7 @@ fun QuizPage(
         )
     }
 }
+
 
 
 
