@@ -59,7 +59,7 @@ fun QuizPage(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFFBBDEFB), Color(0xFFFFFFFF)) // Azul claro a blanco
+                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFFFFFFF)) // Azul claro a blanco
                 )
             )
             .padding(16.dp)
