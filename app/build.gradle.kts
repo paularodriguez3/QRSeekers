@@ -77,6 +77,7 @@ dependencies {
     implementation ("androidx.camera:camera-view:1.3.0")
     implementation ("androidx.camera:camera-extensions:1.3.0")
     implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.storage.ktx)
 
     // Debugging tools for Jetpack Compose
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.1")

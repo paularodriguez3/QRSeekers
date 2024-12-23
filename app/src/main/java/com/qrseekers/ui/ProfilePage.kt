@@ -32,6 +32,17 @@ import com.qrseekers.viewmodels.AuthViewModel
 import com.qrseekers.R
 import com.qrseekers.data.User
 import com.qrseekers.viewmodels.AuthState
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Base64
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import java.io.ByteArrayOutputStream
+
 
 @Composable
 fun ProfilePage(
@@ -45,8 +56,23 @@ fun ProfilePage(
     // Estados para almacenar los datos del usuario
     var email by remember { mutableStateOf("Loading...") }
     var participates by remember { mutableStateOf("None") }
+    var profileImageBase64 by remember { mutableStateOf<String?>(null) }
 
-    // Obtener datos del usuario desde Firestore
+    val context = LocalContext.current
+
+    // Observa el estado de autenticación
+    val authState by authViewModel.authState.observeAsState(AuthState.Loading)
+
+    // Redirige a la pantalla de inicio de sesión si el usuario cierra sesión
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Unauthenticated) {
+            navController.navigate(AppRoute.LOGIN.route) {
+                popUpTo(AppRoute.PROFILE.route) { inclusive = true }
+            }
+        }
+    }
+
+    // Recuperar imagen desde Firestore
     LaunchedEffect(userId) {
         if (userId != null) {
             FirebaseFirestore.getInstance().collection("users").document(userId)
@@ -55,6 +81,7 @@ fun ProfilePage(
                     if (document.exists()) {
                         email = document.getString("email") ?: "No Email"
                         participates = document.getString("gameName")?.takeIf { it.isNotEmpty() } ?: "No active game"
+                        profileImageBase64 = document.getString("profileImageBase64")
                     }
                 }
                 .addOnFailureListener {
@@ -64,14 +91,15 @@ fun ProfilePage(
         }
     }
 
-    // Manejo del cierre de sesión
-    val authState by authViewModel.authState.observeAsState(AuthState.Loading)
-
-    // Redirigir al LoginScreen si el usuario cierra sesión
-    LaunchedEffect(authState) {
-        if (authState is AuthState.Unauthenticated) {
-            navController.navigate(AppRoute.LOGIN.route) {
-                popUpTo(AppRoute.PROFILE.route) { inclusive = true }
+    // Selector de imágenes
+    val selectImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            val base64String = encodeImageToBase64(it, context)
+            if (base64String != null) {
+                profileImageBase64 = base64String
+                // Guardar en Firestore
+                FirebaseFirestore.getInstance().collection("users").document(userId!!)
+                    .update("profileImageBase64", base64String)
             }
         }
     }
@@ -99,7 +127,8 @@ fun ProfilePage(
                     .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
-            ) {
+            )
+            {
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.Default.Close,
@@ -118,20 +147,43 @@ fun ProfilePage(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Imagen y nombre del usuario
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            // Imagen del usuario
+            Box(
+                modifier = Modifier.size(120.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo_square),
-                    contentDescription = "Profile Picture",
+                if (profileImageBase64 != null) {
+                    val bitmap = decodeBase64ToBitmap(profileImageBase64!!)
+                    Image(
+                        bitmap = bitmap!!.asImageBitmap(),
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape)
+                            .background(Color.White)
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo_square),
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape)
+                            .background(Color.White)
+                    )
+                }
+                IconButton(
+                    onClick = { selectImageLauncher.launch("image/*") },
                     modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape)
-                        .background(Color.White)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                        .align(Alignment.BottomEnd)
+                        .size(32.dp)
+                        .background(Color.White, CircleShape)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit Profile Picture",
+                        tint = Color(0xFF1E88E5)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -210,6 +262,32 @@ fun ProfilePage(
         }
     }
 }
+
+
+
+fun encodeImageToBase64(uri: Uri, context: android.content.Context): String? {
+    return try {
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val bytes = inputStream?.readBytes()
+        inputStream?.close()
+        Base64.encodeToString(bytes, Base64.DEFAULT)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+
+fun decodeBase64ToBitmap(base64: String): Bitmap? {
+    return try {
+        val bytes = Base64.decode(base64, Base64.DEFAULT)
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
 
 
 @Preview(showBackground = true)
