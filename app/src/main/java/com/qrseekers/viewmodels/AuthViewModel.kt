@@ -160,7 +160,21 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun resetPoints() {
+        _user.value = _user.value.copy(points = 0) // Reiniciar puntos en el estado local
 
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId)
+                .update("points", 0) // Reiniciar puntos en Firestore
+                .addOnSuccessListener {
+                    Log.d("AuthViewModel", "Points reset successfully in Firestore.")
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("AuthViewModel", "Failed to reset points in Firestore: ${exception.message}")
+                }
+        }
+    }
 
 
 }

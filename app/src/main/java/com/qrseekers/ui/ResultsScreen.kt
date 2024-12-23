@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -32,6 +33,7 @@ fun ResultsScreen(
     authViewModel: AuthViewModel,
     allCorrect: Boolean // Determinar si todas las respuestas son correctas
 ) {
+
     val points = authViewModel.user.value.points
 
     Box(
@@ -106,7 +108,9 @@ fun ResultsScreen(
 
             // Botón para regresar
             Button(
-                onClick = { navController.navigate(AppRoute.JOINGAME.route) },
+                onClick = {
+                    authViewModel.resetPoints()
+                    navController.navigate(AppRoute.JOINGAME.route) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
