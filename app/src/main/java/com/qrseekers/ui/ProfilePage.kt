@@ -43,7 +43,6 @@ fun ProfilePage(
     val userId = user?.uid
 
     // Estados para almacenar los datos del usuario
-    var nickname by remember { mutableStateOf("Loading...") }
     var email by remember { mutableStateOf("Loading...") }
     var participates by remember { mutableStateOf("None") }
 
@@ -54,13 +53,11 @@ fun ProfilePage(
                 .get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        nickname = document.getString("nickname") ?: "Unknown"
                         email = document.getString("email") ?: "No Email"
                         participates = document.getString("gameName")?.takeIf { it.isNotEmpty() } ?: "No active game"
                     }
                 }
                 .addOnFailureListener {
-                    nickname = "Error loading data"
                     email = "Error loading data"
                     participates = "Error loading data"
                 }
@@ -135,17 +132,10 @@ fun ProfilePage(
                         .background(Color.White)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = nickname,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E88E5)
-                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Información del usuario
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -178,11 +168,19 @@ fun ProfilePage(
                             tint = Color(0xFF1E88E5)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = participates,
-                            fontSize = 16.sp,
-                            color = Color.Gray
-                        )
+                        Column {
+                            Text(
+                                text = "Last game played:",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Black
+                            )
+                            Text(
+                                text = participates,
+                                fontSize = 16.sp,
+                                color = Color.Gray
+                            )
+                        }
                     }
                 }
             }
