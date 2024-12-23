@@ -124,19 +124,20 @@ class AuthViewModel : ViewModel() {
     }
 
     // Update user participation in a game
-    fun setUserGameParticipation(userId: String, gameId: String, name: String) {
-        val userMap = mapOf("participates" to gameId)
-        gameName = name
-
-        firestore.collection("users").document(userId)
-            .update(userMap)
-            .addOnSuccessListener {
-                Log.d("UserGame", "Successfully updated game participation for user $userId")
-            }
-            .addOnFailureListener { exception ->
-                Log.e("UserGame", "Failed to update game participation: ${exception.message}")
-            }
+    fun setUserGameParticipation(userId: String, gameId: String, gameName: String) {
+        val userDoc = FirebaseFirestore.getInstance().collection("users").document(userId)
+        userDoc.update(
+            mapOf(
+                "gameId" to gameId,
+                "gameName" to gameName // Actualiza el nombre del juego seleccionado
+            )
+        ).addOnSuccessListener {
+            Log.d("AuthViewModel", "Game participation updated for user: $userId")
+        }.addOnFailureListener { e ->
+            Log.e("AuthViewModel", "Error updating game participation: ${e.localizedMessage}")
+        }
     }
+
 
     fun addPoints(gamePoints: Int) {
         _user.value = _user.value.copy(points = _user.value.points + gamePoints)

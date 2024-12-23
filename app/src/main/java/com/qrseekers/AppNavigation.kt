@@ -38,23 +38,18 @@ import com.qrseekers.viewmodels.ZoneViewModel
 fun AppNavigation(
     modifier: Modifier,
     authViewModel: AuthViewModel,
-    quizViewModel : QuizViewModel,
+    quizViewModel: QuizViewModel,
     gameViewModel: GameViewModel,
     zoneViewModel: ZoneViewModel,
-
-    ) {
+) {
     val authState by authViewModel.authState.observeAsState(initial = AuthState.Loading)
 
-
     val navController = rememberNavController()
-
-    val currentRoute = navController.currentBackStackEntry?.destination?.route
-    println("Current route: $currentRoute") // Debugging
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     // State to track if bottom bar should be shown
-    val showBottomBar = remember { mutableStateOf(true) }
+    val showBottomBar = remember { mutableStateOf(false) }
 
     // Check authentication state
     LaunchedEffect(Unit) {
@@ -63,13 +58,6 @@ fun AppNavigation(
 
     LaunchedEffect(navBackStackEntry) {
         showBottomBar.value = ShowBottomBarCheck(navController)
-    }
-
-
-    val startDestination = if (authState == AuthState.Authenticated) {
-        AppRoute.JOINGAME.route
-    } else {
-        AppRoute.LOGIN.route
     }
 
     Scaffold(
@@ -82,9 +70,14 @@ fun AppNavigation(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = startDestination,
+            startDestination = AppRoute.WELCOME.route, // Siempre empieza en WelcomeScreen
             modifier = Modifier.padding(innerPadding)
         ) {
+            // WelcomeScreen
+            composable(AppRoute.WELCOME.route) {
+                WelcomeScreen(navController, authState)
+            }
+
             composable(AppRoute.LOGIN.route) {
                 LoginPage(modifier, navController, authViewModel)
             }
@@ -93,10 +86,6 @@ fun AppNavigation(
             }
             composable(AppRoute.FORGOT_PASSWORD.route) {
                 ForgotPasswordScreen(navController)
-            }
-
-            composable(AppRoute.PROFILE.route) {
-                ProfilePage(modifier, navController, authViewModel)
             }
 
             composable(AppRoute.JOINGAME.route) {
@@ -108,16 +97,15 @@ fun AppNavigation(
                 )
             }
 
+            composable(AppRoute.PROFILE.route) {
+                ProfilePage(modifier, navController, authViewModel)
+            }
 
 
-            composable(
-               AppRoute.RULES.route
-
-            ) {
+            composable(AppRoute.RULES.route) {
                 RulesScreen(
                     navController = navController,
                     gameViewModel = gameViewModel
-
                 )
             }
 
@@ -166,6 +154,7 @@ private fun ShowBottomBarCheck(navController: NavHostController): Boolean {
 }
 
 enum class AppRoute(val route: String) {
+    WELCOME("welcome"),  // Nueva ruta para la pantalla de bienvenida
     LOGIN("login"),
     SIGNUP("signup"),
     FORGOT_PASSWORD("forgot_password"),
@@ -180,7 +169,8 @@ enum class AppRoute(val route: String) {
     companion object {
         val bottomNavRoutes = values()
             .filterNot {
-                it == LOGIN ||
+                it == WELCOME ||
+                        it == LOGIN ||
                         it == SIGNUP ||
                         it == RULES ||
                         it == FORGOT_PASSWORD ||
@@ -189,6 +179,5 @@ enum class AppRoute(val route: String) {
             .map { it.route }
             .toSet()
     }
-
-
 }
+

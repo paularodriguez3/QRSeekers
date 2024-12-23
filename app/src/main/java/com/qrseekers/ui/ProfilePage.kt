@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,19 +31,21 @@ import com.qrseekers.AppRoute
 import com.qrseekers.viewmodels.AuthViewModel
 import com.qrseekers.R
 import com.qrseekers.data.User
+import com.qrseekers.viewmodels.AuthState
 
 @Composable
-fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
+fun ProfilePage(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    authViewModel: AuthViewModel
+) {
     val user = FirebaseAuth.getInstance().currentUser
     val userId = user?.uid
 
     // Estados para almacenar los datos del usuario
     var nickname by remember { mutableStateOf("Loading...") }
     var email by remember { mutableStateOf("Loading...") }
-    var participates by remember { mutableStateOf("Loading...") }
-    var points by remember { mutableStateOf("Loading...") }
-
-
+    var participates by remember { mutableStateOf("None") }
 
     // Obtener datos del usuario desde Firestore
     LaunchedEffect(userId) {
@@ -51,39 +54,37 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                 .get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        nickname = document.getString("nickname") ?: "No game"
+                        nickname = document.getString("nickname") ?: "Unknown"
                         email = document.getString("email") ?: "No Email"
-                        participates = document.getString("gameName") ?: "None" //todo: set game name into dbs in join game/rules
-                        //points =  document.getString("points") ?: "0"
+                        participates = document.getString("gameName")?.takeIf { it.isNotEmpty() } ?: "No active game"
                     }
                 }
                 .addOnFailureListener {
                     nickname = "Error loading data"
                     email = "Error loading data"
                     participates = "Error loading data"
-                    //points = "Error loading data"
-
-
-
                 }
         }
     }
 
-    Button(
-        onClick = {
-            authViewModel.signout() // Cerrar sesión
-        }
-    ) {
-        Text("Logout")
-    }
+    // Manejo del cierre de sesión
+    val authState by authViewModel.authState.observeAsState(AuthState.Loading)
 
+    // Redirigir al LoginScreen si el usuario cierra sesión
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Unauthenticated) {
+            navController.navigate(AppRoute.LOGIN.route) {
+                popUpTo(AppRoute.PROFILE.route) { inclusive = true }
+            }
+        }
+    }
 
     Surface(
         modifier = modifier
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB)) // Azul claro consistente
+                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFFFFFFF))
                 )
             )
     ) {
@@ -111,7 +112,6 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                 }
                 Text(
                     text = "QRseekers",
-                    style = MaterialTheme.typography.headlineLarge,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF1E88E5)
@@ -137,8 +137,8 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = nickname,
-                    style = MaterialTheme.typography.headlineMedium,
                     fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
                     color = Color(0xFF1E88E5)
                 )
             }
@@ -167,7 +167,6 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = email,
-                            style = MaterialTheme.typography.bodyMedium,
                             fontSize = 16.sp,
                             color = Color.Gray
                         )
@@ -181,26 +180,10 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = participates,
-                            style = MaterialTheme.typography.bodyMedium,
                             fontSize = 16.sp,
                             color = Color.Gray
                         )
                     }
-                    /*Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Money, // todo: better icon for points
-                            contentDescription = "Points",
-                            tint = Color(0xFF1E88E5)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = points,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontSize = 16.sp,
-                            color = Color.Gray
-                        )
-                    }*/
-
                 }
             }
 
@@ -209,7 +192,7 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
             // Botón de Logout
             Button(
                 onClick = {
-                    authViewModel.signout() // Llama a signout en AuthViewModel
+                    authViewModel.signout() // Cerrar sesión
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -229,6 +212,7 @@ fun ProfilePage(modifier: Modifier = Modifier, navController: NavController, aut
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

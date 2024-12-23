@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,9 +18,27 @@ import androidx.navigation.NavController
 import com.qrseekers.AppRoute
 import com.qrseekers.ui.components.ReusableSimpleButton
 import com.qrseekers.R
+import com.qrseekers.viewmodels.AuthState
 
 @Composable
-fun WelcomeScreen(navController: NavController) {
+fun WelcomeScreen(navController: NavController, authState: AuthState) {
+    LaunchedEffect(authState) {
+        kotlinx.coroutines.delay(1000) // Esperar 2 segundos
+        when (authState) {
+            is AuthState.Authenticated -> {
+                navController.navigate(AppRoute.JOINGAME.route) {
+                    popUpTo(AppRoute.WELCOME.route) { inclusive = true }
+                }
+            }
+            is AuthState.Unauthenticated, is AuthState.Error -> {
+                navController.navigate(AppRoute.LOGIN.route) {
+                    popUpTo(AppRoute.WELCOME.route) { inclusive = true }
+                }
+            }
+            else -> Unit // No hacer nada si el estado es Loading
+        }
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFFE3F2FD)
@@ -31,7 +50,6 @@ fun WelcomeScreen(navController: NavController) {
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Centrar logo y títulos
             Column(
                 modifier = Modifier
                     .fillMaxHeight(0.6f),
@@ -57,25 +75,8 @@ fun WelcomeScreen(navController: NavController) {
                     modifier = Modifier.size(250.dp)
                 )
             }
-            // Botones y enlace de forgotten password
-            Column(
-                modifier = Modifier
-                    .padding(bottom = 48.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ReusableSimpleButton(navController, AppRoute.LOGIN.route, "Login")
-                Spacer(modifier = Modifier.height(32.dp))
-                ReusableSimpleButton(navController, AppRoute.SIGNUP.route, "Sign Up")
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Forgotten Password?",
-                    fontSize = 14.sp,
-                    color = Color(0xFF1E88E5),
-                    modifier = Modifier
-                        .clickable { navController.navigate(AppRoute.FORGOT_PASSWORD.route) }
-                        .padding(top = 8.dp)
-                )
-            }
         }
     }
 }
+
+
