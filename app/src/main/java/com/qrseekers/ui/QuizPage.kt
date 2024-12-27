@@ -190,8 +190,10 @@ fun QuestionItem(
         Text(
             text = "$index. (${question.points} pts) ${question.text}",
             style = MaterialTheme.typography.bodyLarge,
+            color = Color.Black ,
             modifier = Modifier.padding(bottom = 8.dp)
         )
+
 
         // Optional image
         question.imageUrl?.let {
