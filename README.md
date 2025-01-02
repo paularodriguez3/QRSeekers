@@ -49,4 +49,5 @@ QRseekers is an interactive app that invites you to explore cities in a fun and 
 - **Easy to use**: Simply choose a game, follow the clues, and scan QR codes.  
 - **Perfect for everyone**: Ideal for tourists, families, and urban adventurers.
 
-  
+## **Technical documentation**
+- The Firebase architecture diagram and the APK file can be found in the report folder.
