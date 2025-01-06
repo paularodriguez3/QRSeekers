@@ -48,7 +48,8 @@ class AuthViewModel : ViewModel() {
                             email = email,
                             zone = "None",  // Default value
                             points = 0,     // Default points
-                            gameName = "None"  // Default value
+                            gameName = "None",  // Default value
+                            profileImageBase64 = null,
                         )
 
                         saveUserToFirestore(user)
@@ -64,7 +65,7 @@ class AuthViewModel : ViewModel() {
     // Save the user to Firestore
     fun saveUserToFirestore(user: User) {
         firestore.collection("users").document(user.id)
-            .set(user)  // Firestore can directly handle User objects, no need for toMap()
+            .set(user)
             .addOnSuccessListener {
                 _authState.value = AuthState.Authenticated
             }
