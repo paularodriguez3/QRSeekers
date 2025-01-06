@@ -6,20 +6,10 @@ data class User (
     val email: String = "None",
     val zone: String = "None",
     val points: Int = 0,
-    val gameName: String = "None"
+    val gameName: String = "None",
+    val profileImageBase64: String? = null,
 ){
     override fun toString(): String {
         return "User(id='$id', username='$nickname', email='$email', zone='$zone', points='$points', gameName='$gameName')"
-    }
-
-    fun toMap(): Map<String, Any> {
-        return mapOf(
-            "id" to id,
-            "username" to nickname,
-            "email" to email,
-            "zone" to zone,
-            "points" to points,
-            "gameName" to gameName
-        )
     }
 }
